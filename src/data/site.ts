@@ -232,7 +232,7 @@ export const education = [
 export const training: { title: string; detail?: string }[] = [
 	{
 		title: 'A study on effectiveness of training and development',
-		detail: 'By hotel and Marriott Global Source (MGS), plus safety trainings.',
+		detail: 'Delivered through the hotel and Marriott Global Source (MGS), alongside safety training.',
 	},
 	{ title: 'A study on employee motivation' },
 	{

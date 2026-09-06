@@ -22,6 +22,7 @@ gallery:
   - ../../assets/work/next-door-street/03.jpg
   - ../../assets/work/next-door-street/04.jpg
   - ../../assets/work/next-door-street/06.jpg
+  - ../../assets/work/next-door-street/07.jpg
   - ../../assets/work/next-door-street/08.jpg
 order: 5
 ---

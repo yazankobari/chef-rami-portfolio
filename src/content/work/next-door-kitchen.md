@@ -19,6 +19,7 @@ tags:
 cover: ../../assets/work/next-door-kitchen/cover.jpg
 gallery:
   - ../../assets/work/next-door-kitchen/01.jpg
+  - ../../assets/work/next-door-kitchen/02.jpg
   - ../../assets/work/next-door-kitchen/03.jpg
   - ../../assets/work/next-door-kitchen/04.jpg
   - ../../assets/work/next-door-kitchen/05.jpg

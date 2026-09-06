@@ -15,6 +15,8 @@ export const collections = {
 				scope: z.array(z.string()).default([]),
 				tags: z.array(z.string()).default([]),
 				cover: image(),
+				/** object-position for the case-study hero crop, e.g. "50% 80%". */
+				coverFocus: z.string().default('50% 50%'),
 				gallery: z.array(image()).default([]),
 				url: z.string().optional(),
 				order: z.number(),

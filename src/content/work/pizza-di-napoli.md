@@ -13,6 +13,7 @@ tags:
   - "Wood Fire"
   - "Recipe Development"
 cover: ../../assets/work/pizza-di-napoli/cover.jpg
+coverFocus: "50% 88%"
 gallery:
   - ../../assets/work/pizza-di-napoli/02.jpg
   - ../../assets/work/pizza-di-napoli/03.jpg

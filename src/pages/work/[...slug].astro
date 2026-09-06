@@ -14,7 +14,8 @@ export async function getStaticPaths() {
 }
 
 const { project, next } = Astro.props;
-const { title, venue, location, period, summary, scope, tags, cover, gallery, url } = project.data;
+const { title, venue, location, period, summary, scope, tags, cover, coverFocus, gallery, url } =
+	project.data;
 const { Content } = await render(project);
 ---
 
@@ -30,6 +31,7 @@ const { Content } = await render(project);
 				loading="eager"
 				fetchpriority="high"
 				data-hero-image
+				style={`object-position:${coverFocus}`}
 				class="absolute inset-0 h-full w-full origin-center object-cover will-change-transform"
 			/>
 			</div>

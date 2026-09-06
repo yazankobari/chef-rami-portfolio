@@ -54,9 +54,10 @@
 	}
 }
 
-/* While the page is moving, hover states would fire on whatever slides past the cursor. */
-:root.is-scrolling body {
-	pointer-events: none;
+/* Hover states must not fire on whatever slides under a stationary cursor while the page
+   moves — but the page itself has to stay clickable throughout. */
+:root.is-scrolling .card-zoom {
+	transform: none !important;
 }
 
 @utility eyebrow {
@@ -76,6 +77,10 @@
 @media (prefers-reduced-motion: no-preference) {
 	:root.js [data-anim='rise'] {
 		opacity: 0;
+	}
+
+	[data-hero-curtain] {
+		animation: hero-curtain 1.2s var(--ease-out-expo) backwards;
 	}
 
 	/* Hero copy animates in CSS so the largest text paints without waiting for JS. */
@@ -102,6 +107,14 @@
 
 	::view-transition-new(root) {
 		animation: vt-in 0.55s var(--ease-out-expo) both;
+	}
+}
+
+/* The curtain covers the hero at first paint and opens on its own timeline, so a late
+   bundle can never black out a headline that has already been painted. */
+@keyframes hero-curtain {
+	from {
+		transform: scaleY(1);
 	}
 }
 

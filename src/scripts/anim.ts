@@ -205,6 +205,7 @@ function initCursor() {
 		dot!.style.opacity = '1';
 	};
 	const onOver = (e: PointerEvent) => {
+		if (document.documentElement.classList.contains('is-scrolling')) return;
 		targetScale = (e.target as Element)?.closest?.('a, button, summary, [data-row]') ? 3.4 : 1;
 	};
 	window.addEventListener('pointermove', onMove, { passive: true });
@@ -357,12 +358,10 @@ function initHeroScroll(hero: HTMLElement) {
 
 		// The picture collapses from the bottom while the type stays anchored — the
 		// reference's hero exit. Unpinned heroes keep their opening wipe instead.
-		if (curtain) {
-			// The curtain both opens the hero on load and closes it again on scroll, so a
-			// single writer owns it and no clip edge ever sweeps across a photograph.
-			const intro = clamp((performance.now() - started) / 1300);
-			const opening = Math.pow(1 - intro, 3);
-			curtain.style.transform = `scaleY(${(wrap ? Math.max(progress, opening) : opening).toFixed(4)})`;
+		if (curtain && wrap) {
+			// Opening is a CSS animation; this only closes it again on scroll. Writing an
+			// empty string while at rest hands control back to the stylesheet.
+			curtain.style.transform = progress > 0.001 ? `scaleY(${progress.toFixed(4)})` : '';
 		}
 		if (images.length) {
 			const intro = clamp((performance.now() - started) / 2200);
@@ -508,6 +507,7 @@ function initRowHover() {
 	document.querySelectorAll<HTMLElement>('[data-row]').forEach((row) => {
 		cleanups.push(
 			hover(row, () => {
+				if (document.documentElement.classList.contains('is-scrolling')) return;
 				animate(row, { backgroundColor: 'rgba(201,171,124,0.05)' }, { duration: 0.4, ease: EASE });
 				const marker = row.querySelector('[data-row-marker]');
 				if (marker) animate(marker, { scaleX: [0, 1] }, { duration: 0.6, ease: EASE });
