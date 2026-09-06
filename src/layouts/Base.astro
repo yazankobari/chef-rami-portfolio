@@ -1,5 +1,6 @@
 ---
 import { link } from '../lib/url';
+import { contact } from '../data/site';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import Nav from '../components/Nav.astro';
@@ -34,8 +35,8 @@ const person = {
 		'Consultant chef with 26 years across ten countries: restaurant concepts, menus, kitchens and teams built from scratch.',
 	url: new URL(link('/'), Astro.site).href,
 	image: new URL('/og.jpg', Astro.site).href,
-	email: 'rami-almaket@hotmail.com',
-	telephone: '+971505089654',
+	email: contact.email,
+	telephone: contact.phoneHref,
 	address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
 	sameAs: ['https://instagram.com/rami.almakt'],
 	knowsAbout: [

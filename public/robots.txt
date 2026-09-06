@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://cheframi.com/sitemap-index.xml
+Sitemap: https://ramialmaket.com/sitemap-index.xml
