@@ -192,8 +192,12 @@ function initCursor() {
 		dot.setAttribute('aria-hidden', 'true');
 		dot.className =
 			'pointer-events-none fixed top-0 left-0 z-[60] h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gold opacity-0 mix-blend-difference';
+		// A text caret still needs to be visible where text is selectable.
 		document.body.append(dot);
 	}
+	document.documentElement.classList.add('has-cursor-dot');
+	cleanups.push(() => document.documentElement.classList.remove('has-cursor-dot'));
+
 	const pos = { x: innerWidth / 2, y: innerHeight / 2 };
 	const target = { ...pos };
 	let scale = 1;
@@ -359,9 +363,14 @@ function initHeroScroll(hero: HTMLElement) {
 		// The picture collapses from the bottom while the type stays anchored — the
 		// reference's hero exit. Unpinned heroes keep their opening wipe instead.
 		if (curtain && wrap) {
-			// Opening is a CSS animation; this only closes it again on scroll. Writing an
-			// empty string while at rest hands control back to the stylesheet.
-			curtain.style.transform = progress > 0.001 ? `scaleY(${progress.toFixed(4)})` : '';
+			// Opening is a CSS animation; this only closes it again on scroll. Once we take
+			// over we must drop that animation, or its fill would outrank the inline style.
+			if (progress > 0.001) {
+				if (curtain.style.animation !== 'none') curtain.style.animation = 'none';
+				curtain.style.transform = `scaleY(${progress.toFixed(4)})`;
+			} else if (!curtain.style.animation) {
+				curtain.style.transform = '';
+			}
 		}
 		if (images.length) {
 			const intro = clamp((performance.now() - started) / 2200);
@@ -458,6 +467,20 @@ function initCounters() {
 function initHero() {
 	const hero = document.querySelector<HTMLElement>('[data-hero]');
 	if (!hero) return;
+
+	if (introIsFresh && !reduced()) {
+		const items = hero.querySelectorAll('[data-hero-item]');
+		if (items.length) {
+			animate(
+				items,
+				{ opacity: [0, 1], y: [36, 0], filter: ['blur(12px)', 'blur(0px)'] },
+				{ duration: 1.1, delay: stagger(0.09), ease: EASE }
+			);
+		}
+		const curtain = hero.querySelector<HTMLElement>('[data-hero-curtain]');
+		if (curtain) animate(curtain, { scaleY: [1, 0] }, { duration: 1.2, ease: EASE });
+	}
+
 	initHeroScroll(hero);
 }
 
@@ -523,7 +546,18 @@ function initRowHover() {
 function init() {
 	cleanups.forEach((fn) => fn());
 	cleanups = [];
-	document.documentElement.classList.add('js');
+	const root = document.documentElement;
+	root.classList.add('js');
+
+	// On a slow connection the stylesheet can arrive long after the content has painted.
+	// Running the entrance then would black out a headline the reader is already looking
+	// at, so skip it whenever the first paint is already well behind us.
+	const fcp = performance
+		.getEntriesByType('paint')
+		.find((e) => e.name === 'first-contentful-paint')?.startTime;
+	// Nothing in the hero is hidden by CSS, so a late boot simply means no entrance —
+	// never a headline that blacks out after the reader has already seen it.
+	introIsFresh = fcp === undefined || performance.now() - fcp < 500;
 	document.documentElement.dataset.animReady = 'true';
 	initSmoothScroll();
 	initHero();
@@ -543,6 +577,7 @@ function init() {
 }
 
 let booted = false;
+let introIsFresh = true;
 
 init();
 booted = true;

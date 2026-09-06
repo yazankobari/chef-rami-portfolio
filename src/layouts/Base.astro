@@ -10,25 +10,30 @@ interface Props {
 	title: string;
 	description?: string;
 	image?: string;
+	/** Extra JSON-LD nodes for this page, appended to the site-wide Person. */
+	schemaNodes?: Record<string, unknown>[];
 }
 
 const {
 	title,
 	description = 'Rami Al Maket — consultant chef. Restaurant concepts, menus, kitchens and teams built from scratch across ten countries.',
 	image = '/og.jpg',
+	schemaNodes = [],
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
 
-const schema = {
-	'@context': 'https://schema.org',
+// The Person is a fixed identity — it must not take on each page's description or photo.
+const person = {
 	'@type': 'Person',
+	'@id': new URL(link('/'), Astro.site).href + '#chef',
 	name: 'Rami Al Maket',
 	jobTitle: 'Consultant Chef',
-	description,
-	url: Astro.site?.href,
-	image: ogImage.href,
+	description:
+		'Consultant chef with 26 years across ten countries: restaurant concepts, menus, kitchens and teams built from scratch.',
+	url: new URL(link('/'), Astro.site).href,
+	image: new URL('/og.jpg', Astro.site).href,
 	email: 'rami-almaket@hotmail.com',
 	telephone: '+971505089654',
 	address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
@@ -42,6 +47,8 @@ const schema = {
 		'Mediterranean cuisine',
 	],
 };
+
+const schema = { '@context': 'https://schema.org', '@graph': [person, ...schemaNodes] };
 ---
 
 <!doctype html>
@@ -62,14 +69,15 @@ const schema = {
 		<meta name="twitter:image" content={ogImage} />
 		<script type="application/ld+json" set:html={JSON.stringify(schema)} />
 		<meta name="theme-color" content="#0a0908" />
-		<Font cssVariable="--font-display" preload />
-		<Font cssVariable="--font-sans" preload />
+		<Font cssVariable="--astro-font-display" preload />
+		<Font cssVariable="--astro-font-sans" preload />
 		<ClientRouter />
 		<script is:inline>
 			// Enhancement flag. If the animation bundle never boots, drop it again so
 			// nothing stays hidden behind a script that failed to load.
 			var root = document.documentElement;
 			root.classList.add('js');
+
 			setTimeout(function () {
 				if (!root.dataset.animReady) root.classList.remove('js');
 			}, 2000);

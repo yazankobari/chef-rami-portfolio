@@ -1,6 +1,6 @@
 ---
 import { link } from '../../lib/url';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ContactBlock from '../../components/ContactBlock.astro';
@@ -17,9 +17,34 @@ const { project, next } = Astro.props;
 const { title, venue, location, period, summary, scope, tags, cover, coverFocus, gallery, url } =
 	project.data;
 const { Content } = await render(project);
+
+// Share cards must be landscape. Astro's sharp service refuses to enlarge, so clamp the
+// requested size to what the source can actually supply at 1.91:1.
+const shareWidth = Math.min(1200, cover.width, Math.round((cover.height * 1200) / 630));
+const share = await getImage({
+	src: cover,
+	width: shareWidth,
+	height: Math.round((shareWidth * 630) / 1200),
+	format: 'jpeg',
+	quality: 82,
+});
+
+const projectSchema = {
+	'@type': 'CreativeWork',
+	name: title,
+	description: summary,
+	locationCreated: { '@type': 'Place', name: location },
+	creator: { '@id': new URL(link('/'), Astro.site).href + '#chef' },
+	...(url ? { sameAs: url } : {}),
+};
 ---
 
-<Base title={`${title} — Rami Al Maket`} description={summary} image={cover.src}>
+<Base
+	title={`${title} — Rami Al Maket`}
+	description={summary}
+	image={share.src}
+	schemaNodes={[projectSchema]}
+>
 	<article>
 		<header data-hero class="relative flex min-h-[70svh] items-end overflow-hidden">
 			<div class="absolute inset-0" data-reveal-frame>
@@ -164,7 +189,5 @@ const { Content } = await render(project);
 		</nav>
 	</article>
 
-	<div class="pt-20">
-		<ContactBlock />
-	</div>
+	<ContactBlock />
 </Base>

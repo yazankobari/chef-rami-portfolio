@@ -9,8 +9,8 @@
 	--color-gold: #c9ab7c;
 	--color-gold-deep: #8a7350;
 
-	--font-display: var(--font-display), Georgia, serif;
-	--font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+	--font-display: var(--astro-font-display);
+	--font-sans: var(--astro-font-sans);
 
 	--text-display: clamp(3.5rem, 13vw, 12rem);
 	--text-display--line-height: 0.86;
@@ -60,6 +60,15 @@
 	transform: none !important;
 }
 
+/* With the dot cursor active the native arrow is redundant. Fine pointers only, and only
+   once the dot is actually on screen, so a failed bundle never leaves a cursorless page. */
+@media (pointer: fine) {
+	:root.has-cursor-dot,
+	:root.has-cursor-dot * {
+		cursor: none;
+	}
+}
+
 @utility eyebrow {
 	font-size: 0.6875rem;
 	font-weight: 400;
@@ -68,25 +77,26 @@
 	color: var(--color-gold);
 }
 
+/* The rule hangs in the section gutter so the heading's glyphs keep the same left edge
+   as the eyebrow above it and the copy below it. 0.75rem clears the 20px mobile gutter. */
 @utility rule-left {
-	border-left: 2px solid var(--color-gold);
-	padding-left: 1rem;
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: -0.75rem;
+		width: 2px;
+		background: var(--color-gold);
+	}
 }
 
 /* Motion is progressive: without JS or with reduced motion, everything is visible. */
 @media (prefers-reduced-motion: no-preference) {
 	:root.js [data-anim='rise'] {
 		opacity: 0;
-	}
-
-	[data-hero-curtain] {
-		animation: hero-curtain 1.2s var(--ease-out-expo) backwards;
-	}
-
-	/* Hero copy animates in CSS so the largest text paints without waiting for JS. */
-	[data-hero-item] {
-		animation: hero-in 1.1s var(--ease-out-expo) both;
-		animation-delay: calc(var(--hero-index, 0) * 90ms);
 	}
 
 	:root.js [data-split] > span {
@@ -107,22 +117,6 @@
 
 	::view-transition-new(root) {
 		animation: vt-in 0.55s var(--ease-out-expo) both;
-	}
-}
-
-/* The curtain covers the hero at first paint and opens on its own timeline, so a late
-   bundle can never black out a headline that has already been painted. */
-@keyframes hero-curtain {
-	from {
-		transform: scaleY(1);
-	}
-}
-
-@keyframes hero-in {
-	from {
-		opacity: 0;
-		transform: translateY(36px);
-		filter: blur(12px);
 	}
 }
 

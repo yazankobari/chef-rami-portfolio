@@ -11,7 +11,7 @@ const { eyebrow, title, lede, id, class: className } = Astro.props;
 
 <div id={id} class:list={['max-w-3xl', className]}>
 	{eyebrow && <p class="eyebrow" data-anim="rise">{eyebrow}</p>}
-	<div class="mt-4 overflow-hidden pb-[0.18em]">
+	<div class="mt-4 -ml-4 overflow-hidden pb-[0.18em] pl-4">
 		<h2 data-anim="mask" class="rule-left font-display text-title font-light text-bone">{title}</h2>
 	</div>
 	{lede && <p class="mt-6 max-w-2xl text-lede text-ash" data-split>{lede}</p>}
