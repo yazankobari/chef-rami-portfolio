@@ -1,0 +1,175 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import { profile, stats, countries, career, education, training, awards } from '../data/site';
+import portrait from '../assets/site/portrait.png';
+import ritz from '../assets/site/ritz.jpg';
+---
+
+<Base
+	title="About — Rami Al Maket"
+	description="26 years, nine countries, and a career from demi chef de partie in Damascus to consultant chef in Dubai."
+>
+	<section class="mx-auto max-w-[110rem] px-5 pt-40 pb-20 sm:px-8 sm:pt-48">
+		<div class="grid gap-14 lg:grid-cols-[1fr_1.2fr] lg:gap-20" data-anim-unit>
+			<div data-anim="rise" class="overflow-hidden" data-reveal-frame>
+				<Image
+					src={portrait}
+					alt="Chef Rami Al Maket"
+					widths={[400, 700]}
+					sizes="(min-width: 1024px) 38vw, 80vw"
+					loading="eager"
+					class="aspect-[4/5] w-full object-cover"
+				/>
+			</div>
+			<div>
+				<p class="eyebrow">About</p>
+				<h1 class="mt-5 font-display text-title font-light text-balance text-bone">
+					{profile.creed}
+				</h1>
+				<div class="mt-8 max-w-2xl space-y-5 text-base leading-relaxed text-ash">
+					<p>{profile.intro}</p>
+					<p>{profile.bio}</p>
+				</div>
+				<dl class="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-4">
+					{
+						stats.map((stat) => (
+							<div class="flex flex-col-reverse border-t border-ink-line pt-4">
+								<dt class="mt-2 text-xs tracking-[0.14em] text-ash uppercase">{stat.label}</dt>
+								<dd
+									data-count={stat.value}
+									class="font-sans text-4xl font-light text-gold lining-nums tabular-nums"
+								>
+									{stat.value}
+								</dd>
+							</div>
+						))
+					}
+				</dl>
+				<p class="mt-10 text-sm text-ash">
+					<span class="eyebrow mr-3">Kitchens across</span>
+					{countries.join(' · ')}
+				</p>
+			</div>
+		</div>
+	</section>
+
+	<!-- Career -->
+	<section class="border-t border-ink-line bg-ink-raised">
+		<div class="mx-auto max-w-[110rem] px-5 py-24 sm:px-8 sm:py-32">
+			<SectionHead
+				eyebrow="Background"
+				title="Previous work"
+				lede="From the pass at Le Royal Meridien in Damascus to junior executive sous chef at The Ritz-Carlton Dubai."
+			/>
+
+			<div class="mt-16 space-y-20">
+				{
+					career.map((group) => (
+						<div class="grid gap-8 lg:grid-cols-[16rem_1fr] lg:gap-14">
+							<h3 class="font-display text-2xl text-gold lg:sticky lg:top-28 lg:self-start">
+								{group.group}
+							</h3>
+							<ol data-anim-group class="border-t border-ink-line">
+								{group.roles.map((role, i) => (
+									<li
+										class="grid gap-2 border-b border-ink-line py-7 last:border-b-0 sm:grid-cols-[1fr_1.4fr] sm:gap-8"
+										data-anim="rise"
+									>
+										<div>
+											<h4 class="text-lg text-bone">{role.title}</h4>
+											<p class="mt-1 text-sm text-ash">{role.org}</p>
+											<p class="mt-1 text-sm text-gold/80 lining-nums tabular-nums">{role.period}</p>
+										</div>
+										<p class="max-w-2xl text-sm leading-relaxed text-ash">{role.body}</p>
+									</li>
+								))}
+							</ol>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Education, training, awards -->
+	<section class="mx-auto max-w-[110rem] px-5 py-24 sm:px-8 sm:py-32">
+		<div class="grid gap-16 lg:grid-cols-3">
+			<div data-anim="rise">
+				<h2 class="rule-left font-display text-3xl font-light text-bone">Education</h2>
+				<ul class="mt-8 border-t border-ink-line">
+					{
+						education.map((item) => (
+							<li class="border-b border-ink-line py-5">
+								<p class="text-base text-bone">{item.title}</p>
+								<p class="mt-1 text-sm text-ash">
+									{item.org} · {item.period}
+								</p>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<div data-anim="rise">
+				<h2 class="rule-left font-display text-3xl font-light text-bone">Training</h2>
+				<ul class="mt-8 border-t border-ink-line">
+					{
+						training.map((item) => (
+							<li class="border-b border-ink-line py-5">
+								<p class="text-base text-bone">{item.title}</p>
+								{item.detail && <p class="mt-1 text-sm leading-relaxed text-ash">{item.detail}</p>}
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<div data-anim="rise">
+				<h2 class="rule-left font-display text-3xl font-light text-bone">Honours</h2>
+				<ul class="mt-8 border-t border-ink-line">
+					{
+						[...awards].sort((a, b) => Number(b.year) - Number(a.year)).map((award) => (
+							<li class="border-b border-ink-line py-5">
+								<p class="text-base text-bone">{award.title}</p>
+								<p class="mt-1 text-sm text-ash">
+									{award.org} · {award.year}
+								</p>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section class="relative overflow-hidden">
+		<div class="relative h-[60svh] overflow-clip" data-reveal-frame>
+			<div class="absolute inset-0 overflow-clip">
+			<Image
+				src={ritz}
+				alt="Chef Rami hosting guests at The Ritz-Carlton Dubai"
+				widths={[800, 1400, 2000]}
+				sizes="100vw"
+				loading="lazy"
+				data-parallax="7"
+				class="h-[118%] w-full -mt-[9%] object-cover object-[58%_30%]"
+			/>
+			</div>
+		</div>
+		<div class="absolute inset-x-0 -top-px -bottom-px bg-gradient-to-t from-ink via-ink/50 to-transparent"></div>
+		<p
+			class="absolute inset-x-0 bottom-0 mx-auto max-w-[110rem] px-5 pb-12 sm:px-8"
+		>
+			<span class="block max-w-2xl font-display text-2xl text-balance text-bone italic sm:text-3xl"
+				>&ldquo;{profile.quote}&rdquo;</span
+			>
+		</p>
+	</section>
+
+	<div class="pt-24">
+		<ContactBlock />
+	</div>
+</Base>

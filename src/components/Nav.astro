@@ -1,0 +1,51 @@
+---
+import { contact } from '../data/site';
+
+const links = [
+	{ href: '/work', label: 'Work' },
+	{ href: '/about', label: 'About' },
+	{ href: '/#services', label: 'Services', hideOnMobile: true },
+	{ href: '/#contact', label: 'Contact' },
+];
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header
+	class="fixed inset-x-0 top-0 z-40 border-b border-ink-line/60 bg-ink/85 backdrop-blur-md"
+>
+	<nav
+		aria-label="Primary"
+		class="mx-auto flex max-w-[110rem] flex-wrap items-center justify-between gap-x-3 gap-y-2 px-5 py-4 sm:flex-nowrap sm:gap-x-6 sm:px-8"
+	>
+		<a href="/" class="group flex items-baseline gap-2.5 leading-none">
+			<span class="font-display text-lg whitespace-nowrap tracking-wide text-bone sm:text-2xl">Rami Al Maket</span>
+			<span class="hidden eyebrow text-[0.6rem] sm:inline">Consultant Chef</span>
+		</a>
+
+		<ul class="ml-auto flex items-center gap-4 text-sm sm:gap-8">
+			{
+				links.map(({ href, label, hideOnMobile }) => (
+					<li class:list={[hideOnMobile && 'hidden sm:block']}>
+						<a
+							href={href}
+							aria-current={href === path ? 'page' : undefined}
+							class:list={[
+								'relative py-1 tracking-wide transition-colors hover:text-gold',
+								href === path ? 'text-gold' : 'text-bone/70',
+							]}
+						>
+							{label}
+						</a>
+					</li>
+				))
+			}
+			<li class="hidden lg:block">
+				<a
+					href={`mailto:${contact.email}`}
+					class="border border-gold/40 px-4 py-2 text-xs tracking-[0.2em] text-gold uppercase transition-colors hover:bg-gold hover:text-ink"
+					>Start a project</a
+				>
+			</li>
+		</ul>
+	</nav>
+</header>

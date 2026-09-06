@@ -1,0 +1,58 @@
+---
+import { contact, profile } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-ink-line bg-ink">
+	<div class="mx-auto max-w-[110rem] px-5 py-14 sm:px-8">
+		<div class="grid gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
+			<div>
+				<p class="font-display text-3xl text-bone">{profile.name}</p>
+				<p class="eyebrow mt-2">{profile.role}</p>
+				<p class="mt-5 max-w-sm text-sm leading-relaxed text-ash">{profile.tagline}</p>
+			</div>
+
+			<nav aria-label="Footer">
+				<p class="eyebrow">Site</p>
+				<ul class="mt-4 space-y-2 text-sm text-ash">
+					<li><a class="transition-colors hover:text-gold" href="/">Home</a></li>
+					<li><a class="transition-colors hover:text-gold" href="/work">Work</a></li>
+					<li><a class="transition-colors hover:text-gold" href="/about">About</a></li>
+					<li><a class="transition-colors hover:text-gold" href="/#services">Services</a></li>
+				</ul>
+			</nav>
+
+			<div>
+				<p class="eyebrow">Contact</p>
+				<ul class="mt-4 space-y-2 text-sm text-ash">
+					<li>
+						<a class="transition-colors hover:text-gold" href={`mailto:${contact.email}`}
+							>{contact.email}</a
+						>
+					</li>
+					<li>
+						<a class="transition-colors hover:text-gold" href={`tel:${contact.phoneHref}`}
+							>{contact.phone}</a
+						>
+					</li>
+					<li>
+						<a
+							class="transition-colors hover:text-gold"
+							href={contact.instagramUrl}
+							rel="me noopener"
+							target="_blank">@{contact.instagram}</a
+						>
+					</li>
+					<li>{contact.base}</li>
+				</ul>
+			</div>
+		</div>
+
+		<div
+			class="mt-12 flex flex-col gap-2 border-t border-ink-line pt-6 text-xs text-ash sm:flex-row sm:items-center sm:justify-between"
+		>
+			<p>&copy; {year} {profile.name}. All rights reserved.</p>
+			<p>{contact.base}</p>
+		</div>
+	</div>
+</footer>

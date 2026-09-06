@@ -1,0 +1,98 @@
+---
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+}
+
+const {
+	title,
+	description = 'Rami Al Maket — consultant chef. Restaurant concepts, menus, kitchens and teams built from scratch across nine countries.',
+	image = '/og.jpg',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@type': 'Person',
+	name: 'Rami Al Maket',
+	jobTitle: 'Consultant Chef',
+	description,
+	url: Astro.site?.href,
+	image: ogImage.href,
+	email: 'rami-almaket@hotmail.com',
+	telephone: '+971505089654',
+	address: { '@type': 'PostalAddress', addressLocality: 'Dubai', addressCountry: 'AE' },
+	sameAs: ['https://instagram.com/rami.almakt'],
+	knowsAbout: [
+		'Restaurant concept development',
+		'Menu engineering',
+		'Kitchen design',
+		'Food cost control',
+		'Arabic cuisine',
+		'Mediterranean cuisine',
+	],
+};
+---
+
+<!doctype html>
+<html lang="en" class="scroll-pt-24">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:url" content={canonical} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={ogImage} />
+		<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+		<meta name="theme-color" content="#0a0908" />
+		<Font cssVariable="--font-display" preload />
+		<Font cssVariable="--font-sans" preload />
+		<ClientRouter />
+		<script is:inline>
+			// Enhancement flag. If the animation bundle never boots, drop it again so
+			// nothing stays hidden behind a script that failed to load.
+			var root = document.documentElement;
+			root.classList.add('js');
+			setTimeout(function () {
+				if (!root.dataset.animReady) root.classList.remove('js');
+			}, 2000);
+		</script>
+		<script>
+			import '../scripts/anim.ts';
+		</script>
+	</head>
+	<body>
+		<a
+			href="#main"
+			class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:bg-gold focus:px-4 focus:py-2 focus:text-ink"
+			>Skip to content</a
+		>
+		<div
+			data-progress
+			class="fixed inset-x-0 top-0 z-50 h-px origin-left [transform:scaleX(0)] bg-gold"
+			aria-hidden="true"
+		>
+		</div>
+		<Nav />
+		<main id="main">
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

@@ -1,0 +1,31 @@
+---
+interface Props {
+	items: string[];
+	duration?: number;
+}
+const { items, duration = 42 } = Astro.props;
+const loop = [...items, ...items];
+---
+
+<div class="group relative flex overflow-hidden border-y border-ink-line bg-ink-raised py-5">
+	<div data-marquee={duration} aria-hidden="true" class="flex min-w-max shrink-0 items-center gap-10 pr-10 will-change-transform">
+		{
+			loop.map((item) => (
+				<span class="flex items-center gap-10 font-display text-2xl tracking-wide whitespace-nowrap text-bone/80 sm:text-3xl">
+					{item}
+					<span class="text-gold">&#8226;</span>
+				</span>
+			))
+		}
+	</div>
+	<div class="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-ink-raised to-transparent"></div>
+	<div class="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-ink-raised to-transparent"></div>
+	<button
+		type="button"
+		data-marquee-toggle
+		class="absolute top-1/2 right-3 z-10 -translate-y-1/2 border border-ink-line bg-ink/80 px-2 py-1 text-[0.6rem] tracking-[0.16em] text-ash uppercase opacity-60 transition-opacity focus-visible:opacity-100 group-hover:opacity-100 sm:opacity-0"
+		aria-pressed="false"
+	>
+		Pause
+	</button>
+</div>

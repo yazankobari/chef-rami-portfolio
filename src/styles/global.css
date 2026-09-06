@@ -1,0 +1,133 @@
+@import 'tailwindcss';
+
+@theme {
+	--color-ink: #0a0908;
+	--color-ink-raised: #131110;
+	--color-ink-line: #262220;
+	--color-bone: #ede8e0;
+	--color-ash: #8b8378;
+	--color-gold: #c9ab7c;
+	--color-gold-deep: #8a7350;
+
+	--font-display: var(--font-display), Georgia, serif;
+	--font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+
+	--text-display: clamp(3.5rem, 13vw, 12rem);
+	--text-display--line-height: 0.86;
+	--text-title: clamp(2.25rem, 6vw, 5rem);
+	--text-title--line-height: 0.98;
+	--text-lede: clamp(1.125rem, 1.8vw, 1.5rem);
+	--text-lede--line-height: 1.6;
+
+	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+	html {
+		/* Lenis owns smooth scrolling; native smooth fights it. */
+		scroll-behavior: auto;
+		-webkit-text-size-adjust: 100%;
+	}
+
+	body {
+		background-color: var(--color-ink);
+		color: var(--color-bone);
+		font-family: var(--font-sans);
+		font-weight: 300;
+		-webkit-font-smoothing: antialiased;
+		overflow-x: hidden;
+	}
+
+	::selection {
+		background: var(--color-gold);
+		color: var(--color-ink);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--color-gold);
+		outline-offset: 3px;
+	}
+
+	/* Gold-on-gold is invisible — flip the ring inside the gold panel. */
+	.bg-gold :focus-visible {
+		outline-color: var(--color-ink);
+	}
+}
+
+/* While the page is moving, hover states would fire on whatever slides past the cursor. */
+:root.is-scrolling body {
+	pointer-events: none;
+}
+
+@utility eyebrow {
+	font-size: 0.6875rem;
+	font-weight: 400;
+	letter-spacing: 0.28em;
+	text-transform: uppercase;
+	color: var(--color-gold);
+}
+
+@utility rule-left {
+	border-left: 2px solid var(--color-gold);
+	padding-left: 1rem;
+}
+
+/* Motion is progressive: without JS or with reduced motion, everything is visible. */
+@media (prefers-reduced-motion: no-preference) {
+	:root.js [data-anim='rise'] {
+		opacity: 0;
+	}
+
+	/* Hero copy animates in CSS so the largest text paints without waiting for JS. */
+	[data-hero-item] {
+		animation: hero-in 1.1s var(--ease-out-expo) both;
+		animation-delay: calc(var(--hero-index, 0) * 90ms);
+	}
+
+	:root.js [data-split] > span {
+		opacity: 0.2;
+	}
+
+	:root.js [data-anim='mask'] {
+		opacity: 0;
+	}
+
+	:root.js [data-reveal-frame] {
+		opacity: 0.25;
+	}
+
+	::view-transition-old(root) {
+		animation: vt-out 0.35s var(--ease-out-expo) both;
+	}
+
+	::view-transition-new(root) {
+		animation: vt-in 0.55s var(--ease-out-expo) both;
+	}
+}
+
+@keyframes hero-in {
+	from {
+		opacity: 0;
+		transform: translateY(36px);
+		filter: blur(12px);
+	}
+}
+
+@keyframes vt-out {
+	to {
+		opacity: 0;
+		filter: blur(6px);
+	}
+}
+
+@keyframes vt-in {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+		filter: blur(8px);
+	}
+}
+
+@utility mask-fade-b {
+	mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+}
