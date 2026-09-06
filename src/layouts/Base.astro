@@ -67,7 +67,7 @@ const schema = { '@context': 'https://schema.org', '@graph': [person, ...schemaN
 		<meta property="og:url" content={canonical} />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:image" content={ogImage} />
-		<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+		<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 		<meta name="theme-color" content="#0a0908" />
 		<Font cssVariable="--astro-font-display" preload />
 		<Font cssVariable="--astro-font-sans" preload />
