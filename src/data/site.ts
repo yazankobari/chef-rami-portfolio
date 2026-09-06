@@ -18,8 +18,8 @@ export const contact = {
 	phoneHref,
 	// wa.me wants the number bare — no plus, no spaces — or it silently opens an empty chat.
 	whatsappUrl: `https://wa.me/${phoneHref.slice(1)}`,
-	instagram: 'rami.almakt',
-	instagramUrl: 'https://instagram.com/rami.almakt',
+	instagram: 'cheframi.almaket',
+	instagramUrl: 'https://www.instagram.com/cheframi.almaket',
 	base: 'Dubai, United Arab Emirates',
 };
 
