@@ -1,5 +1,6 @@
 ---
 import { contact, profile } from '../data/site';
+import ContactIcon from './ContactIcon.astro';
 ---
 
 <section class="mx-auto max-w-[110rem] px-5 pt-24 pb-24 sm:px-8 sm:pt-32">
@@ -18,7 +19,9 @@ import { contact, profile } from '../data/site';
 
 		<div class="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
 			<a href={`mailto:${contact.email}`} class="group block border-t border-ink/25 pt-4">
-				<span class="text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">Email</span>
+				<span class="flex items-center gap-2 text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">
+					<ContactIcon name="mail" class="size-3.5 shrink-0" />Email
+				</span>
 				<span class="mt-2 block text-lg break-words group-hover:underline">{contact.email}</span>
 			</a>
 			<a
@@ -27,7 +30,9 @@ import { contact, profile } from '../data/site';
 				rel="noopener"
 				class="group block border-t border-ink/25 pt-4"
 			>
-				<span class="text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">WhatsApp</span>
+				<span class="flex items-center gap-2 text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">
+					<ContactIcon name="whatsapp" class="size-3.5 shrink-0" />WhatsApp
+				</span>
 				<span class="mt-2 block text-lg group-hover:underline"
 					>{contact.phone}<span class="sr-only"> (opens in a new tab)</span></span
 				>
@@ -38,7 +43,9 @@ import { contact, profile } from '../data/site';
 				rel="me noopener"
 				class="group block border-t border-ink/25 pt-4"
 			>
-				<span class="text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">Instagram</span>
+				<span class="flex items-center gap-2 text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">
+					<ContactIcon name="instagram" class="size-3.5 shrink-0" />Instagram
+				</span>
 				<span class="mt-2 block text-lg group-hover:underline"
 					>@{contact.instagram}<span class="sr-only"> (opens in a new tab)</span></span
 				>
