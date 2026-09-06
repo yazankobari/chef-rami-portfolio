@@ -11,7 +11,7 @@ export const profile = {
 };
 
 export const contact = {
-	email: 'rami-almaket@hotmail.com',
+	email: 'rami@ramialmaket.com',
 	phone: '+971 50 508 9654',
 	phoneHref: '+971505089654',
 	instagram: 'rami.almakt',
