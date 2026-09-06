@@ -139,7 +139,8 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 				</div>
 
 				<div class="relative self-start" data-anim="rise">
-					<div class="relative aspect-[4/5] max-h-[46rem] overflow-hidden" data-reveal-frame>
+					<div class="relative aspect-[4/5] max-h-[46rem] overflow-clip" data-reveal-frame>
+						<div class="absolute inset-x-0 -top-px bottom-px overflow-clip">
 						<Image
 							src={plating}
 							alt="Chef Rami plating a dish"
@@ -148,6 +149,7 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 							data-parallax="8"
 							class="absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover"
 						/>
+						</div>
 					</div>
 					<p
 						class="relative -mt-10 ml-0 max-w-sm bg-ink px-5 py-4 font-display text-xl text-balance text-bone italic sm:text-2xl lg:absolute lg:-bottom-6 lg:left-0 lg:mt-0"
