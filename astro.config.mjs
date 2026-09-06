@@ -4,8 +4,15 @@ import tailwindcss from '@tailwindcss/vite';
 
 import sitemap from '@astrojs/sitemap';
 
+// GitHub Pages serves this project site from /chef-rami-portfolio.
+// Override with SITE / BASE env vars when deploying to a root domain.
+const site = process.env.SITE ?? 'https://yazankobari.github.io';
+const base = process.env.BASE ?? '/chef-rami-portfolio';
+
 export default defineConfig({
-  site: 'https://cheframi.com',
+  site,
+  base,
+  trailingSlash: 'always',
 
   fonts: [
       {

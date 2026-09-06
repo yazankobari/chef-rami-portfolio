@@ -1,4 +1,5 @@
 ---
+import { link } from '../lib/url';
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
@@ -12,7 +13,7 @@ const { title, venue, location, summary, cover, tags } = project.data;
 ---
 
 <a
-	href={`/work/${project.id}`}
+	href={link(`/work/${project.id}`)}
 	class="group block"
 	data-anim="rise"
 >

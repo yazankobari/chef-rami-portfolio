@@ -1,4 +1,5 @@
 ---
+import { link } from '../lib/url';
 import { Image, getImage } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
@@ -69,7 +70,7 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 
 			<div class="mt-10 flex flex-wrap items-center gap-4" data-hero-item style="--hero-index:4">
 				<a
-					href="/work"
+					href={link("/work")}
 					class="border border-gold bg-gold px-7 py-3.5 text-xs tracking-[0.2em] text-ink uppercase transition-colors hover:bg-transparent hover:text-gold"
 					>Selected work</a
 				>
@@ -227,7 +228,7 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 					title="Restaurants built, rebuilt, and handed over running."
 				/>
 				<a
-					href="/work"
+					href={link("/work")}
 					class="border-b border-gold/50 pb-1 text-xs tracking-[0.2em] text-gold uppercase transition-colors hover:border-gold"
 					>All projects ({projects.length})</a
 				>

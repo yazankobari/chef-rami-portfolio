@@ -1,11 +1,12 @@
 ---
+import { link } from '../lib/url';
 import { contact } from '../data/site';
 
 const links = [
-	{ href: '/work', label: 'Work' },
-	{ href: '/about', label: 'About' },
-	{ href: '/#services', label: 'Services', hideOnMobile: true },
-	{ href: '/#contact', label: 'Contact' },
+	{ href: link('/work'), label: 'Work' },
+	{ href: link('/about'), label: 'About' },
+	{ href: link('/#services'), label: 'Services', hideOnMobile: true },
+	{ href: link('/#contact'), label: 'Contact' },
 ];
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
@@ -17,7 +18,7 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 		aria-label="Primary"
 		class="mx-auto flex max-w-[110rem] flex-wrap items-center justify-between gap-x-3 gap-y-2 px-5 py-4 sm:flex-nowrap sm:gap-x-6 sm:px-8"
 	>
-		<a href="/" class="group flex items-baseline gap-2.5 leading-none">
+		<a href={link("/")} class="group flex items-baseline gap-2.5 leading-none">
 			<span class="font-display text-lg whitespace-nowrap tracking-wide text-bone sm:text-2xl">Rami Al Maket</span>
 			<span class="hidden eyebrow text-[0.6rem] sm:inline">Consultant Chef</span>
 		</a>

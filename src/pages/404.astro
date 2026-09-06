@@ -1,4 +1,5 @@
 ---
+import { link } from '../lib/url';
 import Base from '../layouts/Base.astro';
 ---
 
@@ -12,7 +13,7 @@ import Base from '../layouts/Base.astro';
 			The page you are looking for is not on the menu. Try the work instead.
 		</p>
 		<a
-			href="/"
+			href={link("/")}
 			class="mt-10 w-fit border border-gold bg-gold px-7 py-3.5 text-xs tracking-[0.2em] text-ink uppercase transition-colors hover:bg-transparent hover:text-gold"
 			>Back home</a
 		>
