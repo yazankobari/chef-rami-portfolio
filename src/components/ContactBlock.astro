@@ -21,9 +21,16 @@ import { contact, profile } from '../data/site';
 				<span class="text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">Email</span>
 				<span class="mt-2 block text-lg break-words group-hover:underline">{contact.email}</span>
 			</a>
-			<a href={`tel:${contact.phoneHref}`} class="group block border-t border-ink/25 pt-4">
-				<span class="text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">Phone</span>
-				<span class="mt-2 block text-lg group-hover:underline">{contact.phone}</span>
+			<a
+				href={contact.whatsappUrl}
+				target="_blank"
+				rel="noopener"
+				class="group block border-t border-ink/25 pt-4"
+			>
+				<span class="text-[0.6875rem] tracking-[0.22em] text-ink/75 uppercase">WhatsApp</span>
+				<span class="mt-2 block text-lg group-hover:underline"
+					>{contact.phone}<span class="sr-only"> (opens in a new tab)</span></span
+				>
 			</a>
 			<a
 				href={contact.instagramUrl}

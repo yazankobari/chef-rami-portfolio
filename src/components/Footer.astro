@@ -32,8 +32,12 @@ const year = new Date().getFullYear();
 						>
 					</li>
 					<li>
-						<a class="transition-colors hover:text-gold" href={`tel:${contact.phoneHref}`}
-							>{contact.phone}</a
+						<a
+							class="transition-colors hover:text-gold"
+							href={contact.whatsappUrl}
+							rel="noopener"
+							target="_blank"
+							>{contact.phone}<span class="sr-only"> on WhatsApp (opens in a new tab)</span></a
 						>
 					</li>
 					<li>

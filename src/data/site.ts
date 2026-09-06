@@ -10,10 +10,14 @@ export const profile = {
 	creed: 'My recipe for success is made of passion, experience, and continuous learning.',
 };
 
+const phoneHref = '+971505089654';
+
 export const contact = {
 	email: 'rami@ramialmaket.com',
 	phone: '+971 50 508 9654',
-	phoneHref: '+971505089654',
+	phoneHref,
+	// wa.me wants the number bare — no plus, no spaces — or it silently opens an empty chat.
+	whatsappUrl: `https://wa.me/${phoneHref.slice(1)}`,
 	instagram: 'rami.almakt',
 	instagramUrl: 'https://instagram.com/rami.almakt',
 	base: 'Dubai, United Arab Emirates',
