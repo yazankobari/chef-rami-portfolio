@@ -7,7 +7,17 @@ import SectionHead from '../components/SectionHead.astro';
 import Marquee from '../components/Marquee.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ContactBlock from '../components/ContactBlock.astro';
-import { profile, stats, countries, services, process, awards, pressFeatured, pressMore } from '../data/site';
+import {
+	profile,
+	stats,
+	countries,
+	services,
+	beyondKitchen,
+	process,
+	awards,
+	pressFeatured,
+	pressMore,
+} from '../data/site';
 import heroPortrait from '../assets/site/hero-portrait.png';
 import heroPortraitMobile from '../assets/site/hero-portrait-mobile.png';
 import plating from '../assets/site/plating.jpg';
@@ -198,8 +208,39 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 		</div>
 	</section>
 
-	<!-- Process -->
+	<!-- Beyond the kitchen -->
 	<section class="border-t border-ink-line bg-ink">
+		<div class="mx-auto max-w-[110rem] px-5 py-24 sm:px-8 sm:py-32">
+			<SectionHead
+				eyebrow="Beyond the kitchen"
+				title="The rest of the opening, taken care of."
+				lede={beyondKitchen.lede}
+			/>
+
+			<div
+				data-anim-group
+				class="mt-16 grid auto-rows-fr gap-px border border-ink-line bg-ink-line sm:grid-cols-2 lg:grid-cols-3"
+			>
+				{
+					beyondKitchen.items.map((item) => (
+						<div class="group bg-ink p-7 transition-colors duration-500 hover:bg-ink-raised sm:p-9" data-anim="rise">
+							<h3 class="font-display text-2xl text-bone transition-colors group-hover:text-gold sm:text-3xl">
+								{item.title}
+							</h3>
+							<p class="mt-4 text-sm leading-relaxed text-ash">{item.body}</p>
+							<span
+								aria-hidden="true"
+								class="mt-6 block h-px w-8 bg-gold/40 transition-all duration-700 ease-out-expo group-hover:w-16 group-hover:bg-gold"
+							/>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</section>
+
+	<!-- Process -->
+	<section class="border-t border-ink-line bg-ink-raised">
 		<div class="mx-auto max-w-[110rem] px-5 py-24 sm:px-8 sm:py-32">
 			<SectionHead
 				eyebrow="How it works"
@@ -208,7 +249,7 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 			<div data-anim-group class="mt-16 grid auto-rows-fr gap-px border border-ink-line bg-ink-line sm:grid-cols-2 lg:grid-cols-4">
 				{
 					process.map((step, i) => (
-						<div class="group bg-ink p-7 transition-colors hover:bg-ink-raised sm:p-9" data-anim="rise">
+						<div class="group bg-ink-raised p-7 transition-colors hover:bg-ink sm:p-9" data-anim="rise">
 							<span class="font-sans text-sm text-gold lining-nums tabular-nums">
 								{String(i + 1).padStart(2, '0')}
 							</span>
@@ -222,7 +263,7 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 	</section>
 
 	<!-- Selected work -->
-	<section class="border-t border-ink-line bg-ink-raised">
+	<section class="border-t border-ink-line bg-ink">
 		<div class="mx-auto max-w-[110rem] px-5 py-24 sm:px-8 sm:py-32">
 			<div class="flex flex-wrap items-end justify-between gap-6">
 				<SectionHead
@@ -247,7 +288,7 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 	</section>
 
 	<!-- Awards -->
-	<section class="border-t border-ink-line bg-ink">
+	<section class="border-t border-ink-line bg-ink-raised">
 		<div
 			class="mx-auto grid max-w-[110rem] gap-14 px-5 py-24 sm:px-8 sm:py-32 lg:grid-cols-[1fr_1.1fr] lg:gap-20"
 			data-anim-unit
@@ -282,7 +323,7 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 	</section>
 
 	<!-- Press -->
-	<section class="border-t border-ink-line bg-ink-raised">
+	<section class="border-t border-ink-line bg-ink">
 		<div class="mx-auto max-w-[110rem] px-5 py-24 sm:px-8 sm:py-32">
 			<SectionHead eyebrow="In the media" title="Featured press & film." />
 			<ul data-anim-group class="mt-14 grid gap-x-8 border-t border-ink-line sm:grid-cols-2 lg:grid-cols-3">
