@@ -21,6 +21,7 @@ gallery:
   - ../../assets/work/amaseena/04.jpg
   - ../../assets/work/amaseena/05.jpg
   - ../../assets/work/amaseena/06.jpg
+  - ../../assets/work/amaseena/07.jpg
   - ../../assets/work/amaseena/08.jpg
 url: "https://www.amaseenadubai.com"
 order: 1
