@@ -6,6 +6,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import logoChefRamis from '../assets/site/logo-chef-ramis-kitchen.png';
 import logoSole from '../assets/site/logo-sole-burger.png';
+import logoOlivaForno from '../assets/site/logo-oliva-forno.png';
 
 const projects = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
 
@@ -19,6 +20,11 @@ const cloudKitchens = [
 		name: 'Sole Burger',
 		logo: logoSole,
 		body: 'A burger brand built for delivery. Not for sharing.',
+	},
+	{
+		name: 'Oliva & Forno',
+		logo: logoOlivaForno,
+		body: 'A rustic Italian kitchen built for delivery. Wood-fired pizza and pasta worth making an evening of.',
 	},
 ];
 ---
@@ -57,11 +63,11 @@ const cloudKitchens = [
 				</h2>
 			</div>
 			<p class="mt-6 max-w-xl text-lede text-ash" data-split>
-				Two delivery-first brands developed end to end — kitchen, menu and recipes — for a market
-				where the dining room is someone else&rsquo;s living room.
+				Three delivery-first brands developed end to end, from the kitchen through the menu to the
+				recipes, for a market where the dining room is someone else&rsquo;s living room.
 			</p>
 
-			<div data-anim-group class="mt-14 grid gap-px border border-ink-line bg-ink-line sm:grid-cols-2">
+			<div data-anim-group class="mt-14 grid auto-rows-fr gap-px border border-ink-line bg-ink-line sm:grid-cols-2 lg:grid-cols-3">
 				{
 					cloudKitchens.map((brand) => (
 						<article

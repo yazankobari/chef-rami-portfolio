@@ -31,6 +31,8 @@ We opened Olive & Thyme because Sports City needed real Mediterranean food. Fres
 
 Breakfast, lunch, and dinner served daily. Warm service, simple food done right. Come as you are, leave happy. That's always been the goal.
 
+My work covered the concept and the menu: seventy-four dishes across breakfast, salads, mezze, mains and flatbreads, with more than twenty drinks alongside them.
+
 ## Our environment
 
 Step inside to warm interiors with soft lighting and earthy tones. Outside, dining unfolds under the shade of olive trees, surrounded by fresh thyme and open air. A quiet escape in the heart of Sports City.

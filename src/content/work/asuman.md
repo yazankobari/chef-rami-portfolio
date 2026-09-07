@@ -25,8 +25,8 @@ gallery:
 order: 2
 ---
 
-Asuman was a Turkish chocolate shop specialised in a variety of chocolate delicacies.
+Asuman opened as a Turkish chocolate shop, built around a single category of chocolate delicacies. It was a narrow proposition, and sales were not where they needed to be.
 
-During my six-month tenure, I worked to overcome the challenge of low sales by enhancing the menu and introducing renowned Turkish dishes. I focused on developing the menu while simultaneously reducing costs.
+Over a six-month engagement I widened what the kitchen could offer without widening its costs. I rebuilt the menu around recognised Turkish dishes, then extended the business from a shop into all-day dining serving breakfast, lunch and dinner. Menu development and cost reduction ran together throughout, so the added range paid for itself rather than eroding margin.
 
-I expanded the offering to include breakfast, lunch, and dinner, which garnered significant popularity. We also launched a food truck for the restaurant at Global Village in Dubai, offering desserts which achieved remarkable success.
+The broader offering found its audience quickly. We also took the brand beyond its four walls with a dessert food truck at Global Village in Dubai, which proved a considerable success of its own.

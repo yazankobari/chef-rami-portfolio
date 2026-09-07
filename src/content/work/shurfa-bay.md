@@ -25,8 +25,8 @@ gallery:
 order: 6
 ---
 
-Shurfa Bay, a restaurant specialising in Middle Eastern cuisine, offers a luxurious and memorable dining experience.
+Shurfa Bay is a Middle Eastern restaurant conceived as a luxurious and memorable dining experience rather than simply a place to eat.
 
-I played a pivotal role in its development, focusing on creating a high-end culinary experience.
+I played a pivotal role in its development, working to the level of detail a high-end operation demands. That covered the concept and the menu, the layout and maps for the kitchen, the selection and procurement of equipment, the recruitment and training of the team, and the recipe manual that keeps a refined menu consistent service after service.
 
-With a commitment to excellence and attention to detail, Shurfa Bay became not just a restaurant but a destination where culinary dreams come true.
+With that attention carried through to the floor, Shurfa Bay became a destination in its own right.
