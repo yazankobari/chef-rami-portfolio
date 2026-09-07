@@ -27,6 +27,8 @@ gallery:
 order: 5
 ---
 
-A fast-food restaurant that is built upon the success of Next Door Kitchen.
+Next Door Street is the second brand, a fast-food concept built on what Next Door Kitchen had already proven in the neighbourhood.
 
-I undertook the complete establishment of this venture from scratch, working closely to ensure its success through a full pre-opening and operations service.
+Fast food leaves less room for error than casual dining: the same dish has to leave the pass identically at the busiest hour of the week. I established the venture completely from scratch with that in mind, developing the concept and the menu, planning the layout and the kitchen maps, selecting and procuring the equipment, recruiting and training the team, and writing the recipe manual that holds the food steady.
+
+I stayed on to manage operations after opening rather than handing over at the door.

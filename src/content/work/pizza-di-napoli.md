@@ -13,15 +13,18 @@ tags:
   - "Wood Fire"
   - "Recipe Development"
 cover: ../../assets/work/pizza-di-napoli/cover.jpg
-coverFocus: "50% 88%"
 gallery:
+  - ../../assets/work/pizza-di-napoli/01.jpg
   - ../../assets/work/pizza-di-napoli/02.jpg
   - ../../assets/work/pizza-di-napoli/03.jpg
   - ../../assets/work/pizza-di-napoli/04.jpg
   - ../../assets/work/pizza-di-napoli/05.jpg
+  - ../../assets/work/pizza-di-napoli/06.jpg
 order: 7
 ---
 
-Specialising in authentic Italian pizza.
+Pizza di Napoli specialises in authentic Italian pizza, built as a cloud kitchen for delivery rather than a dining room.
 
-I worked from A2Z to establish the kitchen, develop the menu, and create authentic recipes from the Italian cuisine.
+I worked from A2Z to establish it: the kitchen setup, the menu, and authentic recipes drawn from Italian cuisine.
+
+Wood-fired pizza is unforgiving. The dough, the oven and the timing decide the result, and none of them can be corrected once the order has left the kitchen. Getting those fundamentals right, and holding them at delivery volume, was the work.

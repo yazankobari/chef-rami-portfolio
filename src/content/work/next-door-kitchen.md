@@ -28,8 +28,8 @@ gallery:
 order: 4
 ---
 
-Next Door Kitchen: a cozy and inviting restaurant offering casual dining and international cuisine.
+Next Door Kitchen was conceived as a warm neighbourhood restaurant, serving international cuisine in a casual setting.
 
-It was a project where I oversaw the establishment of the entire restaurant from scratch, covering everything from the main entrance to the kitchen. It was designed as a casual dining spot offering international cuisine.
+I established the entire venue from scratch, from the main entrance through to the pass. That covered the concept, the layout and maps, the kitchen design and the equipment behind it, the recipe manual and the supplier list, and the recruitment and training of the team who would run it.
 
-After its successful launch, I continued to be involved in the management of Next Door Kitchen, ensuring that it maintained its high standards and continued to delight customers with its delicious food and welcoming atmosphere. We also opened a food cart at Global Village, offering a taste of Next Door Kitchen delights to a wider audience.
+I stayed involved in the management after opening, holding the standards the launch had set. The brand later reached a wider audience through a food cart at Global Village.

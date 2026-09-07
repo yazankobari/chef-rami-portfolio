@@ -26,6 +26,8 @@ gallery:
 order: 3
 ---
 
-Estabena Restaurant in Dubai was established to offer original Mediterranean cuisine with a hint of Japanese influence. I oversaw the setup of the kitchen for this restaurant from scratch, providing comprehensive services.
+Estabena was established to serve original Mediterranean cuisine with a hint of Japanese influence, a combination that needed a kitchen built deliberately around it.
 
-This comprehensive approach ensured a smooth and successful launch for Estabena, establishing its unique culinary identity and positioning it as a standout dining destination in Dubai.
+I set that kitchen up from scratch. The work began with the concept and the menu, then the layout and the maps that turn a concept into a working room, then the selection and procurement of equipment to match. From there I recruited and trained the staff, wrote the recipe manual that keeps the food consistent once I am no longer standing over it, and put together the supplier list the kitchen would run on.
+
+The result was a smooth launch and a clear culinary identity, positioning Estabena as a standout dining destination in Dubai.

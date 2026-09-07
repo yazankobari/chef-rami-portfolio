@@ -23,12 +23,15 @@ gallery:
   - ../../assets/work/amaseena/06.jpg
   - ../../assets/work/amaseena/07.jpg
   - ../../assets/work/amaseena/08.jpg
+  - ../../assets/work/amaseena/09.jpg
+  - ../../assets/work/amaseena/10.jpg
+  - ../../assets/work/amaseena/11.jpg
 url: "https://www.amaseenadubai.com"
 order: 1
 ---
 
-A venue where I focused on promoting Arabic cuisine.
+Amaseena is the Arabic restaurant at The Ritz-Carlton Dubai, JBR. The brief was to make it a destination in its own right rather than simply the hotel's Arabic option.
 
-I developed themed nights such as **Kabab Nights**, featuring over 50 kabab varieties, and **Moroccan Nights**, offering a complete Moroccan experience from decor to music and authentic dishes. These creative initiatives led to a remarkable increase in sales by over 200%.
+I focused the kitchen on promoting Arabic cuisine properly, then built a calendar around it. **Kabab Nights** carried more than fifty varieties of kabab. **Moroccan Nights** ran as a complete experience, from the decor and the music through to the dishes themselves. Alongside the menu work I led the brigade day to day and trained the team to hold the standards the food was held to.
 
-Our efforts were recognised with awards for **Best Arabic Restaurant** and **Best Restaurant Team** within the Marriott group.
+Those initiatives lifted sales by more than 200%. The restaurant was recognised within the Marriott group with awards for **Best Arabic Restaurant** and **Best Restaurant Team**.
