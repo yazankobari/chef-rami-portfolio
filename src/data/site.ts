@@ -105,6 +105,37 @@ export const process = [
 	},
 ];
 
+export const beyondKitchen = {
+	lede:
+		'A restaurant is more than what leaves the pass. I take care of the parts that surround it with the specialists I work with, so you open with one team instead of five.',
+	items: [
+		{
+			title: 'Brand & identity',
+			body: 'Your name, logo, colours, menu design and signage developed into one identity that holds together on the door, on the plate and on a phone screen.',
+		},
+		{
+			title: 'Website & presence',
+			body: 'A site your guests actually use, with the menu, location, hours, bookings and photography that does the food justice. Plus the listings people check before they choose you.',
+		},
+		{
+			title: 'Digital menus',
+			body: 'Menus your guests scan at the table, priced, photographed and grouped the way you serve. Change a dish in the morning and it is live by lunch, with nothing to reprint.',
+		},
+		{
+			title: 'Ordering & payments',
+			body: 'The system that takes the order and the payment, set up around how you actually serve. Your full menu, sizes, extras and prices loaded correctly, and your team confident on it before you open.',
+		},
+		{
+			title: 'Stock, suppliers & costing',
+			body: 'Stock counts, supplier orders and recipe costs kept in one place, so you can see what a dish costs and what it earns without chasing the numbers.',
+		},
+		{
+			title: 'One connected system',
+			body: 'Ordering, payments, stock and suppliers connected so they share the same information, giving you one set of numbers to work from instead of several that disagree.',
+		},
+	],
+};
+
 export const awards = [
 	{
 		title: 'ACE Rising Star Award',
