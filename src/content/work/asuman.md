@@ -21,7 +21,6 @@ gallery:
   - ../../assets/work/asuman/03.jpg
   - ../../assets/work/asuman/04.jpg
   - ../../assets/work/asuman/05.jpg
-  - ../../assets/work/asuman/06.jpg
 order: 2
 ---
 
