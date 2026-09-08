@@ -11,6 +11,13 @@ interface Props {
 	title: string;
 	description?: string;
 	image?: string;
+	/** Share-card dimensions. Crawlers render the card without fetching when these are set. */
+	imageWidth?: number;
+	imageHeight?: number;
+	imageAlt?: string;
+	ogType?: 'website' | 'article' | 'profile';
+	/** Keep a page out of the index (the 404, chiefly). */
+	noindex?: boolean;
 	/** Extra JSON-LD nodes for this page, appended to the site-wide Person. */
 	schemaNodes?: Record<string, unknown>[];
 }
@@ -19,6 +26,11 @@ const {
 	title,
 	description = 'Rami Al Maket — consultant chef. Restaurant concepts, menus, kitchens and teams built from scratch across ten countries.',
 	image = '/og.jpg',
+	imageWidth = 1200,
+	imageHeight = 630,
+	imageAlt = 'Rami Al Maket, consultant chef',
+	ogType = 'website',
+	noindex = false,
 	schemaNodes = [],
 } = Astro.props;
 
@@ -61,13 +73,22 @@ const schema = { '@context': 'https://schema.org', '@graph': [person, ...schemaN
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonical} />
+		{noindex && <meta name="robots" content="noindex, follow" />}
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:type" content="website" />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content="Rami Al Maket" />
+		<meta property="og:locale" content="en_US" />
 		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content={String(imageWidth)} />
+		<meta property="og:image:height" content={String(imageHeight)} />
+		<meta property="og:image:alt" content={imageAlt} />
 		<meta property="og:url" content={canonical} />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
 		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={imageAlt} />
 		<script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
 		<meta name="theme-color" content="#0a0908" />
 		<Font cssVariable="--astro-font-display" preload />

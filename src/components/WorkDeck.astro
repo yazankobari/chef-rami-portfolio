@@ -1,0 +1,130 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { link } from '../lib/url';
+
+interface Props {
+	projects: CollectionEntry<'work'>[];
+}
+const { projects } = Astro.props;
+---
+
+{/*
+  Every project is on screen at once as an overlapping panel. One panel is open at a
+  time and the open one cycles on a timer, so the whole set reads as a single stack
+  rather than a list you have to scroll.
+*/}
+<div
+	class="relative mt-16"
+	data-deck
+	role="group"
+	aria-roledescription="carousel"
+	aria-label="Selected work"
+>
+	<div
+		data-deck-track
+		class="flex h-[46rem] flex-col gap-px overflow-hidden md:h-[38rem] md:flex-row lg:h-[38rem]"
+	>
+		{
+			projects.map((project, i) => (
+				<a
+					href={link(`/work/${project.id}`)}
+					data-deck-panel
+					data-index={i}
+					style={`z-index:${projects.length - i}`}
+					class="group relative block basis-0 overflow-hidden bg-ink-raised transition-[flex-grow] duration-[900ms] ease-out-expo md:-ml-6 md:first:ml-0"
+				>
+					<div class="absolute inset-0 overflow-hidden">
+						<Image
+							src={project.data.cover}
+							alt={`${project.data.title} — ${project.data.venue}, ${project.data.location}`}
+							widths={[640, 1000, 1600]}
+							sizes="(min-width: 768px) 60vw, 92vw"
+							loading={i < 2 ? 'eager' : 'lazy'}
+							class="absolute inset-0 h-full w-full object-cover transition-transform duration-[1.4s] ease-out-expo group-hover:scale-[1.04]"
+						/>
+					</div>
+
+					{/* Copy lives inside the picture, so the scrim carries it. */}
+					<div
+						class="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/20 transition-opacity duration-700"
+						data-deck-scrim
+					/>
+
+					{/* Collapsed: a spine with the number and name. */}
+					{/* Centred in the strip so every spine reads off the same axis. */}
+					<div
+						data-deck-spine
+						class="pointer-events-none absolute inset-0 flex items-center justify-center p-4 transition-opacity duration-500 md:right-auto md:w-[7rem]"
+					>
+						<span class="font-display text-2xl whitespace-nowrap text-bone md:[writing-mode:vertical-rl] md:rotate-180 sm:text-3xl">
+							{project.data.title}
+						</span>
+					</div>
+
+					{/* Open: the full card. */}
+					{/*
+					  Fixed width on purpose: with inset-x-0 the copy re-wraps as the panel
+					  collapses, which reads as the text scrambling on its way out. A fixed
+					  measure lets the panel clip it instead.
+					*/}
+					<div
+						data-deck-body
+						class="pointer-events-none absolute bottom-0 left-0 w-full p-6 opacity-0 transition-opacity duration-500 sm:p-9 md:w-[min(24rem,40vw)] lg:w-[34rem]"
+					>
+						<span class="font-sans text-xs text-gold lining-nums tabular-nums">
+							{String(i + 1).padStart(2, '0')} <span class="text-ash">/ {String(projects.length).padStart(2, '0')}</span>
+						</span>
+						<h3 class="mt-3 font-display text-3xl text-bone sm:text-5xl">{project.data.title}</h3>
+						<p class="mt-2 text-sm text-bone/85">
+							{project.data.venue
+								? `${project.data.venue} — ${project.data.location}`
+								: project.data.location}
+						</p>
+						<p class="mt-4 max-w-md text-sm leading-relaxed text-bone/75">
+							{project.data.summary}
+						</p>
+						<ul class="mt-5 flex flex-wrap gap-2">
+							{project.data.tags.slice(0, 3).map((tag) => (
+								<li class="border border-bone/25 px-2.5 py-1 text-[0.8125rem] tracking-[0.16em] text-bone/80 uppercase">
+									{tag}
+								</li>
+							))}
+						</ul>
+						<span class="mt-6 inline-flex items-center gap-2 text-xs tracking-[0.2em] text-gold uppercase">
+							View project
+							<span aria-hidden="true" class="transition-transform group-hover:translate-x-1">&rarr;</span>
+						</span>
+					</div>
+				</a>
+			))
+		}
+	</div>
+
+	<div class="mt-6 flex flex-wrap items-center gap-3">
+		<button
+			type="button"
+			data-deck-prev
+			aria-label="Previous project"
+			class="flex size-11 items-center justify-center border border-ink-line text-bone transition-colors hover:border-gold hover:text-gold"
+		>
+			<span aria-hidden="true">&larr;</span>
+		</button>
+		<button
+			type="button"
+			data-deck-next
+			aria-label="Next project"
+			class="flex size-11 items-center justify-center border border-ink-line text-bone transition-colors hover:border-gold hover:text-gold"
+		>
+			<span aria-hidden="true">&rarr;</span>
+		</button>
+		<button
+			type="button"
+			data-deck-toggle
+			aria-pressed="false"
+			class="ml-1 border border-ink-line px-4 py-3 text-xs tracking-[0.18em] text-ash uppercase transition-colors hover:border-gold hover:text-gold"
+		>
+			Pause
+		</button>
+	</div>
+</div>

@@ -342,46 +342,43 @@ function initHeroScroll(hero: HTMLElement) {
 	// Art direction means two <img> elements share this attribute; only one is displayed,
 	// so drive both rather than whichever happens to be first in the DOM.
 	const images = Array.from(hero.querySelectorAll<HTMLElement>('[data-hero-image]'));
+	const items = Array.from(hero.querySelectorAll<HTMLElement>('[data-hero-item]'));
 	if (reduced()) return;
 
-	const curtain = hero.querySelector<HTMLElement>('[data-hero-curtain]');
-	// Only a hero with its own scroll track can be pinned and collapsed. Without one the
-	// travel distance is a single pixel, so the clip snapped between 0% and 100% instantly.
-	const wrap = hero.closest<HTMLElement>('[data-hero-wrap]');
-	const track = wrap ?? hero;
+	// The exit is built from parallax, never from darkness: the photograph lags behind the
+	// scroll and pushes in, while the type leaves ahead of it at staggered rates. Depth
+	// comes from the speed difference, so nothing ever fades the viewport to black.
+	const LEAD = [1.7, 1.0, 0.78, 1.35, 1.9];
 
 	const started = performance.now();
 
 	drivers.push(() => {
-		const rect = track.getBoundingClientRect();
+		const rect = hero.getBoundingClientRect();
 		if (rect.bottom < 0) return;
-		const travel = wrap
-			? Math.max(rect.height - window.innerHeight, 1)
-			: Math.max(rect.height, 1);
-		const progress = clamp(-rect.top / travel);
+		const progress = clamp(-rect.top / Math.max(rect.height, 1));
+		const eased = progress * progress;
 
-		// The picture collapses from the bottom while the type stays anchored — the
-		// reference's hero exit. Unpinned heroes keep their opening wipe instead.
-		if (curtain && wrap) {
-			// Opening is a CSS animation; this only closes it again on scroll. Once we take
-			// over we must drop that animation, or its fill would outrank the inline style.
-			if (progress > 0.001) {
-				if (curtain.style.animation !== 'none') curtain.style.animation = 'none';
-				curtain.style.transform = `scaleY(${progress.toFixed(4)})`;
-			} else if (!curtain.style.animation) {
-				curtain.style.transform = '';
-			}
-		}
 		if (images.length) {
 			const intro = clamp((performance.now() - started) / 2200);
 			const settle = 1.08 - 0.08 * (1 - Math.pow(1 - intro, 3));
-			const scale = (settle + progress * 0.06).toFixed(4);
-			for (const image of images) image.style.transform = `scale(${scale})`;
+			// Holds back against the scroll and pushes in, so it reads as further away.
+			const scale = (settle + progress * 0.14).toFixed(4);
+			const drift = (progress * 16).toFixed(2);
+			for (const image of images)
+				image.style.transform = `translate3d(0, ${drift}%, 0) scale(${scale})`;
 		}
+
 		if (type) {
-			type.style.transform = `translate3d(0, ${(-progress * 90).toFixed(1)}px, 0)`;
-			type.style.opacity = String(clamp(1 - Math.max(0, progress - 0.62) / 0.3));
+			type.style.transform = `translate3d(0, ${(-progress * 40).toFixed(1)}px, 0)`;
+			type.style.opacity = '1';
 		}
+
+		// Each line leaves at its own rate, so the block fans apart on the way out.
+		items.forEach((item, i) => {
+			const lead = LEAD[i % LEAD.length];
+			item.style.transform = `translate3d(0, ${(-eased * 150 * lead).toFixed(1)}px, 0)`;
+			item.style.opacity = String(clamp(1 - Math.max(0, progress - 0.5) / 0.42));
+		});
 	});
 }
 
@@ -420,6 +417,92 @@ function initScrollFlag() {
 		} else if (active && now - lastMoved > 130) {
 			release();
 		}
+	});
+}
+
+/**
+ * Case-study clips get our own controls. The browser's set cannot be trimmed
+ * reliably -- Chromium still draws a fullscreen button under
+ * controlsList="nofullscreen" and Safari ignores controlsList altogether -- so
+ * download, fullscreen and picture-in-picture are removed by never offering
+ * them. Playback is manual, never looped, and a finished clip rewinds to its
+ * poster rather than holding on the last frame.
+ */
+function initClips() {
+	document.querySelectorAll<HTMLElement>('[data-player]').forEach((player) => {
+		const video = player.querySelector<HTMLVideoElement>('[data-clip]');
+		const toggle = player.querySelector<HTMLButtonElement>('[data-clip-toggle]');
+		const badge = player.querySelector<HTMLElement>('[data-clip-badge]');
+		const bar = player.querySelector<HTMLElement>('[data-clip-bar]');
+		const progress = player.querySelector<HTMLElement>('[data-clip-progress]');
+		const time = player.querySelector<HTMLElement>('[data-clip-time]');
+		const mute = player.querySelector<HTMLButtonElement>('[data-clip-mute]');
+		const seek = player.querySelector<HTMLButtonElement>('[data-clip-seek]');
+		if (!video || !toggle || !badge || !bar || !progress || !time || !mute || !seek) return;
+
+		const label = toggle.getAttribute('aria-label')?.replace(/^Play: /, '') ?? '';
+		const clock = (s: number) =>
+			`${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+
+		const paint = () => {
+			const playing = !video.paused && !video.ended;
+			badge.style.opacity = playing ? '0' : '1';
+			bar.style.opacity = playing ? '1' : '0';
+			toggle.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'}: ${label}`);
+		};
+		const onToggle = () => {
+			if (video.paused) video.play().catch(() => undefined);
+			else video.pause();
+		};
+		const onTime = () => {
+			const d = video.duration;
+			if (!Number.isFinite(d) || d <= 0) return;
+			progress.style.width = `${(video.currentTime / d) * 100}%`;
+			time.textContent = clock(video.currentTime);
+		};
+		const onEnded = () => {
+			// Back to the poster, not a frozen final frame.
+			video.load();
+			progress.style.width = '0%';
+			time.textContent = '0:00';
+			paint();
+		};
+		const onMute = (event: MouseEvent) => {
+			event.stopPropagation();
+			video.muted = !video.muted;
+			mute.setAttribute('aria-label', video.muted ? 'Unmute' : 'Mute');
+			mute.style.opacity = video.muted ? '0.45' : '1';
+		};
+		const onSeek = (event: MouseEvent) => {
+			event.stopPropagation();
+			const d = video.duration;
+			if (!Number.isFinite(d) || d <= 0) return;
+			const box = seek.getBoundingClientRect();
+			video.currentTime = clamp((event.clientX - box.left) / box.width) * d;
+			onTime();
+		};
+		const block = (event: Event) => event.preventDefault();
+
+		toggle.addEventListener('click', onToggle);
+		mute.addEventListener('click', onMute);
+		seek.addEventListener('click', onSeek);
+		video.addEventListener('play', paint);
+		video.addEventListener('pause', paint);
+		video.addEventListener('timeupdate', onTime);
+		video.addEventListener('ended', onEnded);
+		video.addEventListener('contextmenu', block);
+		paint();
+
+		cleanups.push(() => {
+			toggle.removeEventListener('click', onToggle);
+			mute.removeEventListener('click', onMute);
+			seek.removeEventListener('click', onSeek);
+			video.removeEventListener('play', paint);
+			video.removeEventListener('pause', paint);
+			video.removeEventListener('timeupdate', onTime);
+			video.removeEventListener('ended', onEnded);
+			video.removeEventListener('contextmenu', block);
+		});
 	});
 }
 
@@ -477,8 +560,6 @@ function initHero() {
 				{ duration: 1.1, delay: stagger(0.09), ease: EASE }
 			);
 		}
-		const curtain = hero.querySelector<HTMLElement>('[data-hero-curtain]');
-		if (curtain) animate(curtain, { scaleY: [1, 0] }, { duration: 1.2, ease: EASE });
 	}
 
 	initHeroScroll(hero);
@@ -523,6 +604,117 @@ function initMarquee() {
 			cleanups.push(() => toggle.removeEventListener('click', onToggle));
 		}
 	});
+}
+
+/**
+ * Overlapping project panels. All of them stay on screen; the open one grows and the
+ * rest hold as spines, cycling on a timer that pauses on hover, focus, hidden tabs and
+ * under reduced motion.
+ */
+function initWorkDeck() {
+	const deck = document.querySelector<HTMLElement>('[data-deck]');
+	if (!deck) return;
+	const panels = Array.from(deck.querySelectorAll<HTMLElement>('[data-deck-panel]'));
+	if (panels.length < 2) return;
+
+	const HOLD = 4200;
+	let index = 0;
+	let paused = reduced();
+	let hovered = false;
+	let timer = 0;
+
+	// Stacked as a column on small screens, so the open panel needs a bigger share of the
+	// track there to fit its copy; side by side it only needs to dominate the row.
+	const openGrow = () => (window.matchMedia('(min-width: 768px)').matches ? 7 : 12);
+
+	const render = () => {
+		const grow = openGrow();
+		panels.forEach((panel, i) => {
+			const open = i === index;
+			// Grow the open panel; the rest keep just enough to read as a spine.
+			panel.style.flexGrow = open ? String(grow) : '1';
+			panel.style.zIndex = String(open ? panels.length + 1 : panels.length - i);
+			panel.setAttribute('aria-current', open ? 'true' : 'false');
+
+			const body = panel.querySelector<HTMLElement>('[data-deck-body]');
+			const spine = panel.querySelector<HTMLElement>('[data-deck-spine]');
+			const scrim = panel.querySelector<HTMLElement>('[data-deck-scrim]');
+			if (body) body.style.opacity = open ? '1' : '0';
+			if (spine) spine.style.opacity = open ? '0' : '1';
+			if (scrim) scrim.style.opacity = open ? '1' : '0.82';
+		});
+	};
+
+	const schedule = () => {
+		clearTimeout(timer);
+		if (paused || hovered || document.hidden) return;
+		timer = window.setTimeout(() => go(index + 1), HOLD);
+	};
+
+	const go = (next: number) => {
+		index = (next + panels.length) % panels.length;
+		render();
+		schedule();
+	};
+
+	// Pointing at a panel opens it directly; the timer resumes when the pointer leaves.
+	panels.forEach((panel, i) => {
+		const onEnter = () => {
+			hovered = true;
+			index = i;
+			render();
+			schedule();
+		};
+		panel.addEventListener('pointerenter', onEnter);
+		panel.addEventListener('focus', onEnter);
+		cleanups.push(() => {
+			panel.removeEventListener('pointerenter', onEnter);
+			panel.removeEventListener('focus', onEnter);
+		});
+	});
+
+	const toggle = deck.querySelector<HTMLButtonElement>('[data-deck-toggle]');
+	const setPaused = (value: boolean) => {
+		paused = value;
+		if (toggle) {
+			toggle.textContent = value ? 'Play' : 'Pause';
+			toggle.setAttribute('aria-pressed', String(value));
+		}
+		schedule();
+	};
+
+	const onPrev = () => go(index - 1);
+	const onNext = () => go(index + 1);
+	const onToggle = () => setPaused(!paused);
+	const onLeave = () => {
+		hovered = false;
+		schedule();
+	};
+	const onVisibility = () => schedule();
+	const onResize = () => render();
+	window.addEventListener('resize', onResize);
+
+	deck.querySelector('[data-deck-prev]')?.addEventListener('click', onPrev);
+	deck.querySelector('[data-deck-next]')?.addEventListener('click', onNext);
+	toggle?.addEventListener('click', onToggle);
+	deck.addEventListener('pointerleave', onLeave);
+	deck.addEventListener('focusout', onLeave);
+	document.addEventListener('visibilitychange', onVisibility);
+
+	cleanups.push(() => {
+		clearTimeout(timer);
+		deck.querySelector('[data-deck-prev]')?.removeEventListener('click', onPrev);
+		deck.querySelector('[data-deck-next]')?.removeEventListener('click', onNext);
+		toggle?.removeEventListener('click', onToggle);
+		deck.removeEventListener('pointerleave', onLeave);
+		deck.removeEventListener('focusout', onLeave);
+		document.removeEventListener('visibilitychange', onVisibility);
+		window.removeEventListener('resize', onResize);
+	});
+
+	if (reduced() && toggle) setPaused(true);
+	render();
+	schedule();
 }
 
 /** Gold wipe follows the pointer across list rows. */
@@ -571,7 +763,9 @@ function init() {
 	initParallax();
 	initMarquee();
 	initRowHover();
+	initWorkDeck();
 	initProgress();
+	initClips();
 	initScrollFlag();
 	startDrivers();
 }

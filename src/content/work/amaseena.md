@@ -27,7 +27,7 @@ gallery:
   - ../../assets/work/amaseena/10.jpg
   - ../../assets/work/amaseena/11.jpg
 url: "https://www.amaseenadubai.com"
-order: 1
+order: 2
 ---
 
 Amaseena is the Arabic restaurant at The Ritz-Carlton Dubai, JBR. The brief was to make it a destination in its own right rather than simply the hotel's Arabic option.

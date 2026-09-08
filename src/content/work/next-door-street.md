@@ -24,7 +24,7 @@ gallery:
   - ../../assets/work/next-door-street/06.jpg
   - ../../assets/work/next-door-street/07.jpg
   - ../../assets/work/next-door-street/08.jpg
-order: 5
+order: 6
 ---
 
 Next Door Street is the second brand, a fast-food concept built on what Next Door Kitchen had already proven in the neighbourhood.

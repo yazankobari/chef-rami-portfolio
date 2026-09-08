@@ -20,7 +20,7 @@ gallery:
   - ../../assets/work/pizza-di-napoli/04.jpg
   - ../../assets/work/pizza-di-napoli/05.jpg
   - ../../assets/work/pizza-di-napoli/06.jpg
-order: 7
+order: 8
 ---
 
 Pizza di Napoli specialises in authentic Italian pizza, built as a cloud kitchen for delivery rather than a dining room.

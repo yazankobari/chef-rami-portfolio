@@ -22,7 +22,7 @@ gallery:
   - ../../assets/work/shurfa-bay/05.jpg
   - ../../assets/work/shurfa-bay/06.jpg
   - ../../assets/work/shurfa-bay/07.jpg
-order: 6
+order: 7
 ---
 
 Shurfa Bay is a Middle Eastern restaurant conceived as a luxurious and memorable dining experience rather than simply a place to eat.
