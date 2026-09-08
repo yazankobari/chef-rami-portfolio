@@ -23,7 +23,7 @@ gallery:
   - ../../assets/work/estabena/04.jpg
   - ../../assets/work/estabena/05.jpg
   - ../../assets/work/estabena/06.jpg
-order: 3
+order: 4
 ---
 
 Estabena was established to serve original Mediterranean cuisine with a hint of Japanese influence, a combination that needed a kitchen built deliberately around it.

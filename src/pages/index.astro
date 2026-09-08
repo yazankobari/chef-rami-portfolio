@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Marquee from '../components/Marquee.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import WorkDeck from '../components/WorkDeck.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import {
 	profile,
@@ -24,7 +24,6 @@ import plating from '../assets/site/plating.jpg';
 import awardsPhoto from '../assets/site/awards-photo.jpg';
 
 const projects = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
-const featured = projects.slice(0, 4);
 
 // Art direction: a portrait crop for phones, the landscape frame above sm. Emitted as a
 // <picture> so the browser downloads exactly one of them.
@@ -38,10 +37,20 @@ const heroMobileSrcset = heroMobileSet.map((i) => `${i.src} ${i.attributes.width
 const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.width}w`).join(', ');
 ---
 
-<Base title="Rami Al Maket — Consultant Chef">
+<Base
+	title="Rami Al Maket — Consultant Chef"
+	schemaNodes={[
+		{
+			'@type': 'WebSite',
+			name: 'Rami Al Maket',
+			url: new URL(link('/'), Astro.site).href,
+			inLanguage: 'en',
+			publisher: { '@id': new URL(link('/'), Astro.site).href + '#chef' },
+		},
+	]}
+>
 	<!-- Hero -->
-	<div data-hero-wrap class="relative h-[140svh] sm:h-[185svh]">
-	<section data-hero class="sticky top-0 flex h-[100svh] items-end overflow-hidden">
+	<section data-hero class="relative flex h-[94svh] items-end overflow-hidden">
 		<div class="absolute inset-0" data-reveal-frame>
 			<picture>
 				<source media="(max-width: 639px)" srcset={heroMobileSrcset} sizes="100vw" type="image/webp" />
@@ -57,12 +66,6 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 					class="absolute inset-0 h-full w-full origin-center object-cover object-[42%_center] opacity-90 will-change-transform sm:object-[72%_center]"
 				/>
 			</picture>
-		</div>
-		<div
-			data-hero-curtain
-			aria-hidden="true"
-			class="absolute inset-x-0 bottom-0 z-10 h-full origin-bottom [transform:scaleY(0)] bg-ink"
-		>
 		</div>
 		<div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/20 sm:bg-gradient-to-r sm:from-ink sm:via-ink/85 sm:to-ink/45 xl:to-transparent"></div>
 		<div class="absolute inset-x-0 -bottom-px h-40 bg-gradient-to-t from-ink to-transparent"></div>
@@ -92,7 +95,6 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 			</div>
 		</div>
 	</section>
-	</div>
 
 	<Marquee
 		items={[
@@ -104,7 +106,6 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 			'Italian',
 			'Gulf',
 			'Continental',
-			'Japanese-influenced',
 			'International',
 		]}
 	/>
@@ -265,25 +266,14 @@ const heroDesktopSrcset = heroDesktopSet.map((i) => `${i.src} ${i.attributes.wid
 	<!-- Selected work -->
 	<section class="border-t border-ink-line bg-ink">
 		<div class="mx-auto max-w-[110rem] px-5 py-24 sm:px-8 sm:py-32">
-			<div class="flex flex-wrap items-end justify-between gap-6">
+			<div>
 				<SectionHead
 					eyebrow="Selected work"
 					title="Restaurants built, rebuilt, and handed over running."
 				/>
-				<a
-					href={link("/work")}
-					class="border-b border-gold/50 pb-1 text-xs tracking-[0.2em] text-gold uppercase transition-colors hover:border-gold"
-					>All projects ({projects.length})</a
-				>
 			</div>
 
-			<div data-anim-group class="mt-16 grid gap-x-8 gap-y-16 md:grid-cols-2">
-				{
-					featured.map((project, i) => (
-						<ProjectCard project={project} index={i} />
-					))
-				}
-			</div>
+			<WorkDeck projects={projects} />
 		</div>
 	</section>
 

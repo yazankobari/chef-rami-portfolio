@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { project, next } = Astro.props;
-const { title, venue, location, period, summary, scope, tags, cover, coverFocus, gallery, url } =
+const { title, venue, location, period, summary, scope, tags, cover, coverFocus, clips, gallery, url } =
 	project.data;
 const { Content } = await render(project);
 
@@ -28,6 +28,20 @@ const share = await getImage({
 	format: 'jpeg',
 	quality: 82,
 });
+
+const breadcrumbs = {
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: new URL(link('/'), Astro.site).href },
+		{ '@type': 'ListItem', position: 2, name: 'Work', item: new URL(link('/work'), Astro.site).href },
+		{ '@type': 'ListItem', position: 3, name: title },
+	],
+};
+
+// Posters can't use srcset, so size them once here rather than shipping the source JPEG.
+const clipPosters = await Promise.all(
+	clips.map((clip) => getImage({ src: clip.poster, width: 800, format: 'webp', quality: 74 }))
+);
 
 const projectSchema = {
 	'@type': 'CreativeWork',
@@ -43,14 +57,18 @@ const projectSchema = {
 	title={`${title} — Rami Al Maket`}
 	description={summary}
 	image={share.src}
-	schemaNodes={[projectSchema]}
+	imageWidth={share.attributes.width ?? shareWidth}
+	imageHeight={share.attributes.height ?? Math.round((shareWidth * 630) / 1200)}
+	imageAlt={`${title} — ${venue}, ${location}`}
+	ogType="article"
+	schemaNodes={[projectSchema, breadcrumbs]}
 >
 	<article>
 		<header data-hero class="relative flex min-h-[70svh] items-end overflow-hidden">
 			<div class="absolute inset-0" data-reveal-frame>
 			<Image
 				src={cover}
-				alt=""
+				alt={`${title} — ${venue}, ${location}`}
 				widths={[800, 1400, 2000]}
 				sizes="100vw"
 				loading="eager"
@@ -114,7 +132,7 @@ const projectSchema = {
 								<dt class="eyebrow">Cuisine &amp; focus</dt>
 								<dd class="mt-3 flex flex-wrap gap-2">
 									{tags.map((tag) => (
-										<span class="border border-ink-line px-2.5 py-1 text-[0.65rem] tracking-[0.16em] text-ash uppercase">
+										<span class="border border-ink-line px-2.5 py-1 text-[0.8125rem] tracking-[0.16em] text-ash uppercase">
 											{tag}
 										</span>
 									))}
@@ -150,6 +168,73 @@ const projectSchema = {
 		{
 			gallery.length > 0 && (
 				<section class="mt-16">
+					{
+						clips.length > 0 && (
+							<div class="mb-6 grid gap-6 sm:grid-cols-2">
+								{clips.map((clip, ci) => (
+									<figure data-reveal-frame>
+										{/* Own controls, not the browser's: controlsList is advisory in
+										    Chromium and ignored outright in Safari, so download / fullscreen
+										    / picture-in-picture can only be removed by not offering them. */}
+										<div class="group relative overflow-clip bg-ink" data-player>
+											<video
+												data-clip
+												src={clip.src}
+												poster={clipPosters[ci].src}
+												playsinline
+												preload="metadata"
+								disablepictureinpicture
+												class="w-full object-cover"
+											/>
+											<button
+												type="button"
+												data-clip-toggle
+												aria-label={`Play: ${clip.alt}`}
+												class="absolute inset-0 grid cursor-pointer place-items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-gold"
+											>
+												<span
+													data-clip-badge
+													class="grid h-16 w-16 place-items-center rounded-full border border-bone/40 bg-ink/55 text-bone backdrop-blur-sm transition group-hover:border-gold group-hover:text-gold"
+												>
+													<svg viewBox="0 0 24 24" class="ml-1 h-6 w-6 fill-current" aria-hidden="true">
+														<path d="M8 5v14l11-7z" />
+													</svg>
+												</span>
+											</button>
+											<div
+												data-clip-bar
+												class="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-3 bg-gradient-to-t from-ink/85 to-transparent px-4 pt-8 pb-3 opacity-0 transition-opacity"
+											>
+												<span data-clip-time class="text-xs tabular-nums text-bone/80">0:00</span>
+												<button
+													type="button"
+													data-clip-seek
+													aria-label="Seek"
+													class="pointer-events-auto flex-1 cursor-pointer py-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
+												>
+													<span class="block h-[3px] overflow-hidden rounded-full bg-bone/25">
+														<span data-clip-progress class="block h-full w-0 bg-gold" />
+													</span>
+												</button>
+												<button
+													type="button"
+													data-clip-mute
+													aria-label="Mute"
+													class="pointer-events-auto cursor-pointer text-bone/80 transition hover:text-gold focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
+												>
+													<svg viewBox="0 0 24 24" class="h-5 w-5 fill-current" aria-hidden="true">
+														<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" />
+													</svg>
+												</button>
+											</div>
+										</div>
+										<figcaption class="mt-2 text-xs text-ash">{clip.alt}</figcaption>
+									</figure>
+								))}
+							</div>
+						)
+					}
+
 					<div class="columns-1 gap-6 sm:columns-2">
 						{gallery.map((img, i) => (
 							<div class="mb-6 break-inside-avoid overflow-hidden" data-reveal-frame>

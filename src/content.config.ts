@@ -17,6 +17,11 @@ export const collections = {
 				cover: image(),
 				/** object-position for the case-study hero crop, e.g. "50% 80%". */
 				coverFocus: z.string().default('50% 50%'),
+				/** Optional silent loop behind the hero; the cover stays as its poster. */
+				/** Optional silent clips shown at the head of the gallery. */
+				clips: z
+					.array(z.object({ src: z.string(), poster: image(), alt: z.string() }))
+					.default([]),
 				gallery: z.array(image()).default([]),
 				url: z.string().optional(),
 				order: z.number(),

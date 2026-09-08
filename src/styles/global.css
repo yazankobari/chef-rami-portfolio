@@ -1,11 +1,11 @@
 @import 'tailwindcss';
 
 @theme {
-	--color-ink: #0a0908;
-	--color-ink-raised: #131110;
-	--color-ink-line: #262220;
+	--color-ink: #100f0d;
+	--color-ink-raised: #191715;
+	--color-ink-line: #2e2a27;
 	--color-bone: #ede8e0;
-	--color-ash: #8b8378;
+	--color-ash: #a49c90;
 	--color-gold: #c9ab7c;
 	--color-gold-deep: #8a7350;
 
@@ -16,8 +16,16 @@
 	--text-display--line-height: 0.86;
 	--text-title: clamp(2.25rem, 6vw, 5rem);
 	--text-title--line-height: 0.98;
-	--text-lede: clamp(1.125rem, 1.8vw, 1.5rem);
+	--text-lede: clamp(1.375rem, 2.2vw, 1.75rem);
 	--text-lede--line-height: 1.6;
+
+	/* Body copy runs at text-sm site-wide, so it carries the readability floor. */
+	--text-xs: 0.875rem;
+	--text-xs--line-height: 1.6;
+	--text-sm: 1.125rem;
+	--text-sm--line-height: 1.65;
+	--text-base: 1.1875rem;
+	--text-base--line-height: 1.65;
 
 	--ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -70,7 +78,7 @@
 }
 
 @utility eyebrow {
-	font-size: 0.6875rem;
+	font-size: 0.8125rem;
 	font-weight: 400;
 	letter-spacing: 0.28em;
 	text-transform: uppercase;

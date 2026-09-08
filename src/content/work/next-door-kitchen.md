@@ -25,7 +25,7 @@ gallery:
   - ../../assets/work/next-door-kitchen/05.jpg
   - ../../assets/work/next-door-kitchen/06.jpg
   - ../../assets/work/next-door-kitchen/07.jpg
-order: 4
+order: 5
 ---
 
 Next Door Kitchen was conceived as a warm neighbourhood restaurant, serving international cuisine in a casual setting.

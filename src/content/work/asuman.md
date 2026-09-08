@@ -21,7 +21,7 @@ gallery:
   - ../../assets/work/asuman/03.jpg
   - ../../assets/work/asuman/04.jpg
   - ../../assets/work/asuman/05.jpg
-order: 2
+order: 3
 ---
 
 Asuman opened as a Turkish chocolate shop, built around a single category of chocolate delicacies. It was a narrow proposition, and sales were not where they needed to be.

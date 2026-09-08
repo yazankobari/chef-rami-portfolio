@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import WorkDeck from '../components/WorkDeck.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import logoChefRamis from '../assets/site/logo-chef-ramis-kitchen.png';
 import logoSole from '../assets/site/logo-sole-burger.png';
@@ -46,9 +46,7 @@ const cloudKitchens = [
 	</section>
 
 	<section class="mx-auto max-w-[110rem] px-5 pb-24 sm:px-8">
-		<div data-anim-group class="grid gap-x-8 gap-y-16 md:grid-cols-2">
-			{projects.map((project, i) => <ProjectCard project={project} index={i} priority={i < 2} />)}
-		</div>
+		<WorkDeck projects={projects} />
 	</section>
 
 	<section class="border-t border-ink-line bg-ink-raised">
