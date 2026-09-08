@@ -1,6 +1,6 @@
 ---
 import { link } from '../lib/url';
-import { contact, profile } from '../data/site';
+import { builtBy, contact, profile } from '../data/site';
 import ContactIcon from './ContactIcon.astro';
 const year = new Date().getFullYear();
 ---
@@ -70,7 +70,17 @@ const year = new Date().getFullYear();
 			class="mt-12 flex flex-col gap-2 border-t border-ink-line pt-6 text-xs text-ash sm:flex-row sm:items-center sm:justify-between"
 		>
 			<p>&copy; {year} {profile.name}. All rights reserved.</p>
-			<p>{contact.base}</p>
+			<p>
+				Site by{' '}
+				<a
+					class="transition-colors hover:text-gold"
+					href={builtBy.url}
+					rel="noopener"
+					target="_blank"
+				>
+					{builtBy.name}<span class="sr-only"> (opens in a new tab)</span>
+				</a>
+			</p>
 		</div>
 	</div>
 </footer>

@@ -23,6 +23,12 @@ export const contact = {
 	base: 'Dubai, United Arab Emirates',
 };
 
+/** Build credit, shown once in the footer's bottom bar. */
+export const builtBy = {
+	name: 'KMTS Digital Solutions',
+	url: 'https://www.kmts.ltd',
+};
+
 export const stats = [
 	{ value: '26', label: 'Years of experience' },
 	{ value: '10', label: 'Countries worked in' },
