@@ -34,6 +34,7 @@ gallery:
   - ../../assets/work/olive-and-thyme/06.jpg
   - ../../assets/work/olive-and-thyme/05.jpg
   - ../../assets/work/olive-and-thyme/10.jpg
+url: "https://oliveandthyme.ae"
 order: 1
 ---
 
