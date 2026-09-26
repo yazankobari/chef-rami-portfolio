@@ -36,6 +36,9 @@ Served by **Hostinger** (Premium Web Hosting, Mumbai datacentre, no CDN) at the
   sets the security headers (CSP, HSTS and others). Hostinger itself forces HTTPS and caches and
   compresses static files.
 - A deploy replaces the whole website folder, so anything not in `dist/` disappears.
+- **IndexNow:** `public/b6bf28adad6de55ede82dac1bdca0fc9.txt` is the site's IndexNow key. POST changed URLs to
+  `https://api.indexnow.org/indexnow` with that key to tell Bing (and other IndexNow engines)
+  straight away instead of waiting for a crawl.
 
 ## Structure
 
