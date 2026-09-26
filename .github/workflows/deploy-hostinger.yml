@@ -1,0 +1,262 @@
+name: Deploy to Hostinger
+
+# Production. This publishes ramialmaket.com at the domain root on Hostinger
+# (LiteSpeed, served directly from the Mumbai server), from dist/ with its
+# .htaccess. It is the only place the site is published.
+#
+# Every push to main releases, the way pushes to main released through GitHub
+# Pages before the move. A manual run is still possible: it defaults to a dry
+# run and must name the domain it overwrites. Hostinger's deploy endpoint
+# extracts the archive over the website root and cannot be undone, so the job
+# ends by proving the new build is live and smoke-testing it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_domain:
+        description: 'Type the exact domain to confirm you mean to overwrite it'
+        required: true
+        type: string
+      dry_run:
+        description: 'Build, validate and check the Hostinger token only. Uploads nothing, deploys nothing.'
+        required: false
+        default: true
+        type: boolean
+
+  push:
+    branches: [main]
+
+# Least privilege: this job reads the repo and talks to Hostinger.
+permissions:
+  contents: read
+
+# One deploy at a time, and never cancel one mid-upload — a half-extracted
+# archive is exactly the state we cannot roll back from.
+concurrency:
+  group: hostinger-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: https://${{ vars.HOSTINGER_DOMAIN }}/
+
+    steps:
+      - name: Check the target domain
+        env:
+          TYPED: ${{ inputs.confirm_domain }}
+          EXPECTED: ${{ vars.HOSTINGER_DOMAIN }}
+          MANUAL: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          set -euo pipefail
+          if [ -z "${EXPECTED}" ]; then
+            echo "::error::Repository variable HOSTINGER_DOMAIN is not set."; exit 1
+          fi
+          # A manual run must name the domain it overwrites; a push to main is the release itself.
+          if [ "${MANUAL}" = true ] && [ "${TYPED}" != "${EXPECTED}" ]; then
+            echo "::error::Typed '${TYPED}' but this environment deploys '${EXPECTED}'."; exit 1
+          fi
+          echo "Target: ${EXPECTED}"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run check
+
+      - name: Build production artifact
+        run: |
+          set -euo pipefail
+          npm run build
+          # The commit this build came from; the job waits for the live site to serve it.
+          printf '%s\n' "${GITHUB_SHA}" > dist/build.txt
+
+      - name: Validate the artifact
+        run: |
+          set -euo pipefail
+          test -f dist/.htaccess  || { echo "::error::dist/.htaccess missing — no www redirect, 404 page or security headers"; exit 1; }
+          test -f dist/404.html   || { echo "::error::dist/404.html missing"; exit 1; }
+          if grep -qi 'noindex' dist/index.html; then echo "::error::homepage carries noindex"; exit 1; fi
+          echo "artifact ok — $(find dist -type f | wc -l | tr -d ' ') files"
+
+      - name: Create archive
+        id: archive
+        run: |
+          set -euo pipefail
+          NAME="chef-rami_${GITHUB_SHA::7}.zip"
+          ( cd dist && zip -qry "../${NAME}" . -x '.DS_Store' )
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+          echo "size=$(stat -c%s "${NAME}")" >> "$GITHUB_OUTPUT"
+          ls -lh "${NAME}"
+
+      # Read-only, so a dry run does it too: it proves the token and the domain.
+      - name: Resolve hosting account
+        id: account
+        env:
+          TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+          DOMAIN: ${{ vars.HOSTINGER_DOMAIN }}
+        run: |
+          set -euo pipefail
+          resp=$(curl -sS --fail-with-body --max-time 60 \
+            -H "Authorization: Bearer ${TOKEN}" -H 'Accept: application/json' \
+            "https://developers.hostinger.com/api/hosting/v1/websites?domain=${DOMAIN}")
+          user=$(printf '%s' "$resp" | python3 -c "
+          import json,sys
+          rows=json.load(sys.stdin).get('data',[])
+          exact=[r for r in rows if r.get('domain','').lower()==sys.argv[1].lower()]
+          if not exact:
+              sys.stderr.write('no website matching %s on this API token\n' % sys.argv[1]); sys.exit(1)
+          print(exact[0]['username'])
+          " "${DOMAIN}")
+          echo "::add-mask::${user}"
+          echo "username=${user}" >> "$GITHUB_OUTPUT"
+          echo "Resolved hosting account for ${DOMAIN}"
+
+      - name: Stop here on a dry run
+        if: ${{ inputs.dry_run }}
+        run: |
+          echo "::notice::Dry run — built and validated ${{ steps.archive.outputs.name }} ($(( ${{ steps.archive.outputs.size }} / 1048576 )) MB), and the token reaches the website. Nothing uploaded, nothing deployed."
+          echo "Re-run with dry_run unchecked to publish."
+
+      - name: Upload archive
+        if: ${{ !inputs.dry_run }}
+        env:
+          TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+          DOMAIN: ${{ vars.HOSTINGER_DOMAIN }}
+          USERNAME: ${{ steps.account.outputs.username }}
+          ARCHIVE: ${{ steps.archive.outputs.name }}
+          SIZE: ${{ steps.archive.outputs.size }}
+        run: |
+          set -euo pipefail
+          creds=$(curl -sS --fail-with-body --max-time 60 -X POST \
+            -H "Authorization: Bearer ${TOKEN}" -H 'Accept: application/json' \
+            "https://developers.hostinger.com/api/hosting/v1/files/upload-urls?username=${USERNAME}&domain=${DOMAIN}")
+
+          # These are live upload credentials for the website root. Mask before
+          # anything can echo them, including a later `set -x` or a curl error.
+          URL=$(printf '%s' "$creds" | python3 -c "import json,sys; print(json.load(sys.stdin)['url'])")
+          AUTH=$(printf '%s' "$creds" | python3 -c "import json,sys; print(json.load(sys.stdin)['auth_key'])")
+          REST=$(printf '%s' "$creds" | python3 -c "import json,sys; print(json.load(sys.stdin)['rest_auth_key'])")
+          echo "::add-mask::${AUTH}"
+          echo "::add-mask::${REST}"
+          echo "::add-mask::${URL}"
+
+          # TUS 1.0.0: create the upload, then send it in 10 MB chunks, the size
+          # Hostinger's own client uses; one large PATCH has been dropped with a
+          # 404 mid-upload. The server's Upload-Offset is the only truth: each
+          # chunk starts where it says, and a failed chunk resumes from a HEAD.
+          curl -sS --fail-with-body --max-time 120 -o /dev/null -X POST "${URL}/${ARCHIVE}?override=true" \
+            -H "X-Auth: ${AUTH}" -H "X-Auth-Rest: ${REST}" \
+            -H 'Tus-Resumable: 1.0.0' -H "Upload-Length: ${SIZE}" -H 'Upload-Offset: 0'
+
+          server_offset() { tr -d '\r' | awk 'tolower($1)=="upload-offset:"{print $2}'; }
+          CHUNK=10485760 offset=0 failures=0
+          while [ "${offset}" -lt "${SIZE}" ]; do
+            dd if="${ARCHIVE}" of=chunk.bin bs=1M iflag=skip_bytes,count_bytes skip="${offset}" count="${CHUNK}" status=none
+            next=$(curl -sS --fail-with-body --max-time 300 -D - -o /dev/null -X PATCH "${URL}/${ARCHIVE}?override=true" \
+              -H "X-Auth: ${AUTH}" -H "X-Auth-Rest: ${REST}" \
+              -H 'Tus-Resumable: 1.0.0' -H 'Content-Type: application/offset+octet-stream' \
+              -H "Upload-Offset: ${offset}" --data-binary @chunk.bin | server_offset || true)
+            if [ -n "${next}" ] && [ "${next}" -gt "${offset}" ]; then offset=${next}; continue; fi
+            failures=$((failures + 1))
+            [ "${failures}" -le 5 ] || { echo "::error::Upload stalled at ${offset} of ${SIZE} bytes. Nothing was deployed."; exit 1; }
+            sleep $((failures * 5))
+            next=$(curl -sS --fail-with-body --max-time 60 -I "${URL}/${ARCHIVE}?override=true" \
+              -H "X-Auth: ${AUTH}" -H "X-Auth-Rest: ${REST}" -H 'Tus-Resumable: 1.0.0' | server_offset || true)
+            echo "::warning::Chunk at ${offset} failed; the server holds ${next:-an unknown number of} bytes, resuming there."
+            offset=${next:-${offset}}
+          done
+          rm -f chunk.bin
+
+          if [ "${offset}" != "${SIZE}" ]; then
+            echo "::error::Upload incomplete — server acknowledged ${offset} of ${SIZE} bytes. Nothing was deployed."
+            exit 1
+          fi
+          echo "Uploaded ${ARCHIVE} (${SIZE} bytes) in chunks; the server offset matches."
+
+      - name: Deploy
+        if: ${{ !inputs.dry_run }}
+        env:
+          TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+          DOMAIN: ${{ vars.HOSTINGER_DOMAIN }}
+          USERNAME: ${{ steps.account.outputs.username }}
+          ARCHIVE: ${{ steps.archive.outputs.name }}
+        run: |
+          set -euo pipefail
+          # The extraction can finish even when this call answers 5xx, so a
+          # failure only warns; "Wait until the new build is live" is the proof.
+          code=$(curl -sS --max-time 600 -o deploy-response.txt -w '%{http_code}' -X POST \
+            -H "Authorization: Bearer ${TOKEN}" -H 'Content-Type: application/json' \
+            -d "{\"archive_path\":\"${ARCHIVE}\"}" \
+            "https://developers.hostinger.com/api/hosting/v1/accounts/${USERNAME}/websites/${DOMAIN}/deploy" || true)
+          case "${code}" in
+            2*) echo "Deploy of ${ARCHIVE} accepted" ;;
+            *)  echo "::warning::Deploy call answered ${code:-nothing}: $(head -c 300 deploy-response.txt 2>/dev/null || true). Checking the live site instead." ;;
+          esac
+
+      # Hostinger's API clears a website's cache with DELETE (POST answers 405).
+      - name: Purge server cache
+        if: ${{ !inputs.dry_run }}
+        env:
+          TOKEN: ${{ secrets.HOSTINGER_API_TOKEN }}
+          DOMAIN: ${{ vars.HOSTINGER_DOMAIN }}
+          USERNAME: ${{ steps.account.outputs.username }}
+        run: |
+          set -euo pipefail
+          code=$(curl -sS --max-time 120 -o /dev/null -w '%{http_code}' -X DELETE \
+            -H "Authorization: Bearer ${TOKEN}" -H 'Accept: application/json' \
+            "https://developers.hostinger.com/api/hosting/v1/accounts/${USERNAME}/websites/${DOMAIN}/cache/clear" || true)
+          case "${code}" in
+            2*) echo "Cache purged" ;;
+            *)  echo "::warning::Cache purge answered ${code:-nothing}" ;;
+          esac
+
+      - name: Wait until the new build is live
+        if: ${{ !inputs.dry_run }}
+        env:
+          DOMAIN: ${{ vars.HOSTINGER_DOMAIN }}
+        run: |
+          set -euo pipefail
+          live=""
+          for attempt in $(seq 1 60); do
+            live=$(curl -sS --max-time 20 "https://${DOMAIN}/build.txt?check=${attempt}" || true)
+            if [ "${live}" = "${GITHUB_SHA}" ]; then echo "Live site serves ${GITHUB_SHA::7}"; exit 0; fi
+            sleep 10
+          done
+          echo "::error::After 10 minutes the live site serves '${live:0:40}', not ${GITHUB_SHA::7}. Check the deploy in hPanel."
+          exit 1
+
+      # The deploy is irreversible, so the smoke test exists to tell you FAST
+      # that you need to redeploy the previous commit, not to prevent the damage.
+      - name: Smoke test the live site
+        if: ${{ !inputs.dry_run }}
+        env:
+          DOMAIN: ${{ vars.HOSTINGER_DOMAIN }}
+        run: |
+          set -euo pipefail
+          fail=0
+          check() {
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 -L --max-redirs 5 "https://${DOMAIN}$1" || echo 000)
+            if [ "$code" != "$2" ]; then echo "::error::$1 returned $code, expected $2"; fail=1
+            else echo "  ok   $1 -> $code"; fi
+          }
+          check /                           200
+          check /about                      200
+          check /work/                      200
+          check /work/olive-and-thyme/      200
+          check /video/olive-and-thyme-chef.mp4 200
+          check /definitely-not-a-real-page 404
+          [ "$fail" -eq 0 ] || { echo "::error::Smoke test failed — redeploy the previous commit."; exit 1; }
+          echo "All smoke checks passed."
