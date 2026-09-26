@@ -23,6 +23,20 @@ npm run build    # static build to dist/
 npm run preview  # serve the build
 ```
 
+## Hosting
+
+Served by **Hostinger** (Premium Web Hosting, Mumbai datacentre, no CDN) at the
+`ramialmaket.com` apex; the domain and its DNS stay at **Spaceship**, and mail is iCloud+.
+
+- **Deploys:** every push to `main` runs `.github/workflows/deploy-hostinger.yml`. It builds,
+  uploads, deploys, then waits until `https://ramialmaket.com/build.txt` shows the new commit
+  and smoke-tests the site. Needs the `HOSTINGER_API_TOKEN` secret and the `HOSTINGER_DOMAIN`
+  variable (`ramialmaket.com`).
+- **Server rules:** `public/.htaccess` sends www to the bare domain, serves the 404 page and
+  sets the security headers (CSP, HSTS and others). Hostinger itself forces HTTPS and caches and
+  compresses static files.
+- A deploy replaces the whole website folder, so anything not in `dist/` disappears.
+
 ## Structure
 
 ```

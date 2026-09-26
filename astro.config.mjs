@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 import sitemap from '@astrojs/sitemap';
 
-// GitHub Pages serves this site from the ramialmaket.com apex (public/CNAME).
+// Hostinger serves this site from the ramialmaket.com apex (see README → Hosting).
 // Override with SITE / BASE env vars for preview deploys on a subpath.
 const site = process.env.SITE ?? 'https://ramialmaket.com';
 const base = process.env.BASE ?? '/';

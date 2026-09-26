@@ -1,0 +1,25 @@
+# Hostinger (LiteSpeed) applies this file. Its defaults already cache static
+# files for a week and compress them, so this only adds what they don't.
+
+# -Indexes: _astro/ and video/ are real directories with no index page, and a
+# listing of them is a free inventory of every asset.
+Options -MultiViews -Indexes
+RewriteEngine On
+
+# One host: www answers with a permanent redirect to the bare domain, path and
+# query kept, so links and search results gather on a single URL.
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
+ErrorDocument 404 /404.html
+
+# The site loads nothing from other origins: fonts, images and films are all
+# served from here, so the policy can stay 'self' throughout.
+<IfModule mod_headers.c>
+  Header always set X-Frame-Options "DENY"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"
+  Header always set Content-Security-Policy "default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+</IfModule>
